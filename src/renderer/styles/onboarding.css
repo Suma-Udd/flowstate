@@ -1,0 +1,299 @@
+/* ==========================================================================
+   First-run setup, the cleanup provider form, and the update card.
+
+   Tokens only: no colour literals, no box-shadow, animation on transform and
+   opacity alone. tests/tokens.test.js enforces all three.
+   ========================================================================== */
+
+/* --- the setup flow hides the sidebar ------------------------------------ */
+
+[data-route="/welcome"] .app { grid-template-columns: 1fr; }
+[data-route="/welcome"] .sidebar { display: none; }
+[data-route="/welcome"] .content { border-left: 0; }
+
+.onb {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  max-width: 44rem;
+  min-height: 100%;
+  margin: 0 auto;
+}
+
+.onb-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+
+.onb-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font: var(--t-micro);
+  letter-spacing: var(--t-micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* --- progress dots ------------------------------------------------------- */
+
+.onb-steps {
+  display: flex;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.onb-step {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.onb-step-dot {
+  display: block;
+  height: calc(var(--border-w) * 3);
+  border-radius: var(--r-full);
+  background: var(--border-strong);
+}
+
+.onb-step.is-done .onb-step-dot { background: var(--text-dim); }
+.onb-step.is-current .onb-step-dot { background: var(--accent); }
+
+.onb-step-label {
+  font: var(--t-micro);
+  letter-spacing: var(--t-micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.onb-step.is-current .onb-step-label { color: var(--text); }
+
+/* --- the card ------------------------------------------------------------ */
+
+.onb-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-8);
+  background: var(--surface);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-lg);
+  animation: view-in var(--dur-slow) var(--ease);
+}
+
+.onb-title {
+  margin: 0;
+  font: var(--t-title);
+  letter-spacing: var(--t-title-tracking);
+  color: var(--text);
+}
+
+.onb-title:focus { outline: none; }
+
+.onb-optional {
+  margin-left: var(--sp-2);
+  font: var(--t-micro);
+  letter-spacing: var(--t-micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.onb-lead {
+  margin: 0;
+  font: var(--t-body);
+  color: var(--text-dim);
+  max-width: 56ch;
+}
+
+.onb-hint {
+  margin: 0;
+  font: var(--t-caption);
+  color: var(--text-dim);
+  max-width: 60ch;
+}
+
+.onb-hint.is-danger { color: var(--danger); }
+
+.onb-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-6) 0 var(--sp-2);
+}
+
+.onb-mark {
+  width: var(--sp-5);
+  height: var(--sp-5);
+  border-radius: var(--r-full);
+  background: var(--signal);
+}
+
+.onb-points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.onb-points li {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: flex-start;
+  font: var(--t-body);
+  color: var(--text-dim);
+}
+
+.onb-points li strong { color: var(--text); font-weight: var(--t-label-weight); }
+
+.onb-points svg {
+  flex: none;
+  width: var(--sp-5);
+  height: var(--sp-5);
+  margin-top: calc(var(--sp-1) / 2);
+  color: var(--text);
+}
+
+.onb-foot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.onb-foot-gap { flex: 1; }
+
+.onb-chord { margin: var(--sp-2) 0; }
+
+.onb-model {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.onb-model-line {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  font: var(--t-label);
+  color: var(--text);
+}
+
+.onb-meter { display: flex; flex-direction: column; }
+
+.onb-heard:empty { display: none; }
+
+.onb-try { min-height: calc(var(--sp-16) * 2); }
+
+.onb-rows {
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-box);
+}
+
+/* --- progress bar -------------------------------------------------------- */
+
+.progress {
+  width: 100%;
+  height: var(--sp-2);
+  appearance: none;
+  border: 0;
+  border-radius: var(--r-full);
+  background: var(--surface-alt);
+  overflow: hidden;
+}
+
+.progress::-webkit-progress-bar { background: var(--surface-alt); }
+.progress::-webkit-progress-value {
+  background: var(--accent);
+  border-radius: var(--r-full);
+}
+
+/* --- the cleanup provider form ------------------------------------------- */
+
+.provider-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.input-row {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+}
+
+.input-row .input { flex: 1; }
+
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--text);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: var(--sp-1);
+  cursor: pointer;
+}
+
+.link-btn svg { width: var(--sp-3); height: var(--sp-3); }
+
+.field-hint svg {
+  display: inline-block;
+  width: var(--sp-3);
+  height: var(--sp-3);
+  vertical-align: middle;
+}
+
+/* --- the update card ----------------------------------------------------- */
+
+.update-card {
+  position: fixed;
+  right: var(--sp-6);
+  bottom: var(--sp-6);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  width: min(26rem, calc(100vw - var(--sp-12)));
+  padding: var(--sp-5);
+  background: var(--surface);
+  border: var(--border-w) solid var(--border-strong);
+  border-radius: var(--r-lg);
+  animation: view-in var(--dur-slow) var(--ease);
+}
+
+.update-card[hidden] { display: none; }
+
+.update-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font: var(--t-heading);
+  color: var(--text);
+}
+
+.update-card-head .onb-mark { width: var(--sp-3); height: var(--sp-3); }
+
+.update-notes {
+  margin: 0;
+  max-height: calc(var(--sp-16) * 2);
+  overflow-y: auto;
+  font: var(--t-caption);
+  color: var(--text-dim);
+  white-space: pre-wrap;
+}
+
+.update-card .btn-row { margin-top: var(--sp-1); }

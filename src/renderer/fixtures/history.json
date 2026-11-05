@@ -1,0 +1,295 @@
+{
+  "_note": "Placeholder data shown before live data arrives, and used for the README screenshots.",
+  "query": "",
+  "filters": {
+    "languages": [
+      {
+        "code": "en",
+        "label": "English"
+      },
+      {
+        "code": "de",
+        "label": "Deutsch"
+      },
+      {
+        "code": "el",
+        "label": "Ελληνικά"
+      }
+    ],
+    "apps": [
+      {
+        "exe": "Code.exe",
+        "label": "Visual Studio Code"
+      },
+      {
+        "exe": "chrome.exe",
+        "label": "Google Chrome"
+      },
+      {
+        "exe": "Discord.exe",
+        "label": "Discord"
+      },
+      {
+        "exe": "Obsidian.exe",
+        "label": "Obsidian"
+      },
+      {
+        "exe": "WindowsTerminal.exe",
+        "label": "Windows Terminal"
+      },
+      {
+        "exe": "notepad.exe",
+        "label": "Notepad"
+      }
+    ],
+    "ranges": [
+      {
+        "key": "7d",
+        "label": "Last 7 days"
+      },
+      {
+        "key": "30d",
+        "label": "Last 30 days"
+      },
+      {
+        "key": "all",
+        "label": "All time",
+        "selected": true
+      }
+    ]
+  },
+  "totals": {
+    "dictations": 1204,
+    "matching": 1204,
+    "retentionDays": 0,
+    "retentionLabel": "Keep everything"
+  },
+  "expandedId": "d-4191",
+  "days": [
+    {
+      "date": "2026-07-26",
+      "label": "Today",
+      "dictations": 4,
+      "entries": [
+        {
+          "id": "d-4192",
+          "at": "2026-07-26T16:38:12+02:00",
+          "relative": "2 minutes ago",
+          "app": {
+            "exe": "Discord.exe",
+            "label": "Discord"
+          },
+          "windowTitle": "#flowstate — Discord",
+          "lang": "de",
+          "words": 22,
+          "durationMs": 10400,
+          "wpm": 127,
+          "asrMs": 412,
+          "llmMs": 733,
+          "totalMs": 1268,
+          "cleanupApplied": true,
+          "raw": "ähm kannst du bitte den pull request für die authentifizierung noch heute durchsehen ich hab die migration schon getestet und die läuft sauber durch",
+          "cleaned": "Kannst du bitte den Pull Request für die Authentifizierung noch heute durchsehen? Ich habe die Migration schon getestet, sie läuft sauber durch."
+        },
+        {
+          "id": "d-4191",
+          "at": "2026-07-26T16:11:47+02:00",
+          "relative": "29 minutes ago",
+          "app": {
+            "exe": "Code.exe",
+            "label": "Visual Studio Code"
+          },
+          "windowTitle": "pipeline.js — flowstate — Visual Studio Code",
+          "lang": "en",
+          "words": 24,
+          "durationMs": 10500,
+          "wpm": 137,
+          "asrMs": 389,
+          "llmMs": 691,
+          "totalMs": 1194,
+          "cleanupApplied": true,
+          "raw": "um so i think we should move the retry logic out of the dictation path because like it just adds another timeout that the user has to sit through you know",
+          "cleaned": "I think we should move the retry logic out of the dictation path — it just adds another timeout the user has to sit through."
+        },
+        {
+          "id": "d-4190",
+          "at": "2026-07-26T15:52:03+02:00",
+          "relative": "48 minutes ago",
+          "app": {
+            "exe": "WindowsTerminal.exe",
+            "label": "Windows Terminal"
+          },
+          "windowTitle": "Windows PowerShell",
+          "lang": "en",
+          "words": 2,
+          "durationMs": 2100,
+          "wpm": 57,
+          "asrMs": 168,
+          "llmMs": 494,
+          "totalMs": 752,
+          "cleanupApplied": true,
+          "cleanupNote": "Terminal profile — no punctuation added, no capitalisation forced.",
+          "raw": "ssh alex at ten dot zero dot zero dot five",
+          "cleaned": "ssh alex@10.0.0.5"
+        },
+        {
+          "id": "d-4189",
+          "at": "2026-07-26T14:07:29+02:00",
+          "relative": "2 hours ago",
+          "app": {
+            "exe": "chrome.exe",
+            "label": "Google Chrome"
+          },
+          "windowTitle": "Inbox (3) — Google Chrome",
+          "lang": "el",
+          "words": 15,
+          "durationMs": 9200,
+          "wpm": 98,
+          "asrMs": 447,
+          "llmMs": 802,
+          "totalMs": 1381,
+          "cleanupApplied": true,
+          "raw": "λοιπόν θα στείλω τις σημειώσεις της συνάντησης το απόγευμα μόλις τελειώσω με τον έλεγχο των δεδομένων",
+          "cleaned": "Θα στείλω τις σημειώσεις της συνάντησης το απόγευμα, μόλις τελειώσω με τον έλεγχο των δεδομένων."
+        }
+      ]
+    },
+    {
+      "date": "2026-07-25",
+      "label": "Yesterday",
+      "dictations": 4,
+      "entries": [
+        {
+          "id": "d-4184",
+          "at": "2026-07-25T08:15:03+02:00",
+          "relative": "yesterday at 08:15",
+          "app": {
+            "exe": "Obsidian.exe",
+            "label": "Obsidian"
+          },
+          "windowTitle": "Project notes — Notes",
+          "lang": "en",
+          "words": 703,
+          "durationMs": 290897,
+          "wpm": 145,
+          "asrMs": 21400,
+          "llmMs": 1850,
+          "totalMs": 23900,
+          "cleanupApplied": true,
+          "raw": "something i want to write down before i lose the thread is why the states issue took as long as it did because from the outside it looks like the smallest kind of work just empty states and a focus ring and it is actually one of the widest issues in the whole backlog because it touches every single screen instead of owning one the first thing i had to decide was where a loading state is even real dictation and the three settings screens already paint from the fixture immediately and then swap in live data once the real channel answers so there is never a moment where the screen is blank waiting on something which means a skeleton there would be solving a problem that does not exist dictionary snippets and history are different they are still fixture only until their own issues land and the shell reads that fixture over ipc before it can paint anything so those three screens genuinely can show nothing for a beat that is where a skeleton earns its place shaped like the real list so nothing jumps when the data lands the second thing was empty states and the rule i kept coming back to was that an empty list is not a failure it is a beginning so the copy has to say what to do next rather than just reporting an absence no dictionary terms yet is true but useless add one when the model keeps getting a name wrong is the same fact pointed at an action history split into two flavours that look similar but are not genuinely nothing dictated yet which is the very first day of using this app and nothing matching the current filters which is a search that came back empty conflating those two would train you to distrust the search box the third thing and the one i almost missed was that a lot of this issue is not new markup at all it is naming an error that already had the data to be named honestly and simply was not the dictation onresult broadcast already carried the injection result ok true or false a real reason string every single time a paste failed and nothing on screen ever looked at it the mic list already rejected sometimes and the catch block just logged to a console nobody reads the config snapshot already carried whether an api key was configured and cleanup being switched on with nothing behind it was invisible until you noticed the raw transcript landing instead of the cleaned one none of that needed a new capability the way the mic level meter did back in the dictation screen issue it needed someone to read what was already flowing past and put a sentence next to it reduced motion turned out to be almost entirely already handled by the token layer which was a relief except for one real gap in the pill where the waveform is drawn by a raf loop rather than a keyframe so the global one millisecond override in the base stylesheet has nothing to grab onto the fix was not to stop the wave because the wave is the actual signal in listening not decoration around it the fix was to stop only the smoothing between samples and let the bar jump straight to the latest one which keeps the meaning and drops the part that was motion for the sake of motion keyboard navigation was the smallest surprise of the four because semantic elements had been the rule since the very first screen real buttons real selects real labels so most of tab order simply worked once you actually tried it with a keyboard instead of a mouse the one thing worth writing down is that an anchor styled as a button still needs its own underline removed which nobody had hit yet because every single button in the app until this issue was a real button element and never a link so the honest summary is that this issue was wide rather than deep nine screens one pill one shared header file and a lot of small real defensible decisions about which state belongs where",
+          "cleaned": "Something I want to write down before I lose the thread is why the states issue took as long as it did, because from the outside it looks like the smallest kind of work, just empty states and a focus ring, and it is actually one of the widest issues in the whole backlog because it touches every single screen instead of owning one. The first thing I had to decide was where a loading state is even real. Dictation and the three Settings screens already paint from the fixture immediately and then swap in live data once the real channel answers, so there is never a moment where the screen is blank waiting on something, which means a skeleton there would be solving a problem that does not exist. Dictionary, Snippets and History are different. They are still fixture only until their own issues land, and the shell reads that fixture over IPC before it can paint anything, so those three screens genuinely can show nothing for a beat. That is where a skeleton earns its place, shaped like the real list so nothing jumps when the data lands. The second thing was empty states, and the rule I kept coming back to was that an empty list is not a failure, it is a beginning, so the copy has to say what to do next rather than just reporting an absence. No dictionary terms yet is true but useless. Add one when the model keeps getting a name wrong is the same fact pointed at an action. History split into two flavours that look similar but are not: genuinely nothing dictated yet, which is the very first day of using this app, and nothing matching the current filters, which is a search that came back empty. Conflating those two would train you to distrust the search box. The third thing, and the one I almost missed, was that a lot of this issue is not new markup at all, it is naming an error that already had the data to be named honestly and simply was not. The dictation onResult broadcast already carried the injection result, ok true or false, a real reason string, every single time a paste failed, and nothing on screen ever looked at it. The mic list already rejected sometimes and the catch block just logged to a console nobody reads. The config snapshot already carried whether an API key was configured, and cleanup being switched on with nothing behind it was invisible until you noticed the raw transcript landing instead of the cleaned one. None of that needed a new capability the way the mic level meter did back in the dictation screen issue. It needed someone to read what was already flowing past and put a sentence next to it. Reduced motion turned out to be almost entirely already handled by the token layer, which was a relief, except for one real gap in the pill, where the waveform is drawn by a raf loop rather than a keyframe, so the global one millisecond override in the base stylesheet has nothing to grab onto. The fix was not to stop the wave, because the wave is the actual signal in listening, not decoration around it. The fix was to stop only the smoothing between samples and let the bar jump straight to the latest one, which keeps the meaning and drops the part that was motion for the sake of motion. Keyboard navigation was the smallest surprise of the four, because semantic elements had been the rule since the very first screen, real buttons, real selects, real labels, so most of tab order simply worked once you actually tried it with a keyboard instead of a mouse. The one thing worth writing down is that an anchor styled as a button still needs its own underline removed, which nobody had hit yet because every single button in the app until this issue was a real button element and never a link. So the honest summary is that this issue was wide rather than deep. Nine screens, one pill, one shared header file, and a lot of small, real, defensible decisions about which state belongs where."
+        },
+        {
+          "id": "d-4187",
+          "at": "2026-07-25T21:14:52+02:00",
+          "relative": "yesterday at 21:14",
+          "app": {
+            "exe": "Obsidian.exe",
+            "label": "Obsidian"
+          },
+          "windowTitle": "Project notes — Notes",
+          "lang": "en",
+          "words": 174,
+          "durationMs": 74000,
+          "wpm": 141,
+          "asrMs": 1934,
+          "llmMs": 1187,
+          "totalMs": 3402,
+          "cleanupApplied": true,
+          "raw": "okay so the thing i want to write down before i forget is why the ordering in the pipeline matters um snippets have to expand before the model runs because if you paste the expansion in raw afterwards it never gets formatted for the app you are in so a signoff lands in the middle of a code comment looking like an email and then the dictionary is the opposite it has to be enforced after the model because models silently correct proper nouns they do not recognise you can tell it three times in the prompt to spell graph ana as one word with a capital c and it will still hand you back graph ana as two words about one time in ten which is worse than not shipping the feature at all because you stop trusting it and start reading every single output which defeats the entire point so the order is raw then snippets then the model then dictionary repair then the final text and both of those two rules exist because getting them backwards produces something that looks like it works",
+          "cleaned": "The thing I want to write down before I forget is why the ordering in the pipeline matters.\n\nSnippets have to expand before the model runs. If you paste the expansion in raw afterwards it never gets formatted for the app you are in, so a signoff lands in the middle of a code comment looking like an email.\n\nThe dictionary is the opposite: it has to be enforced after the model, because models silently correct proper nouns they do not recognise. You can tell it three times in the prompt to spell Grafana as one word with a capital C and it will still hand you back \"graph ana\" as two words about one time in ten — which is worse than not shipping the feature at all, because you stop trusting it and start reading every output, which defeats the entire point.\n\nSo the order is: raw, then snippets, then the model, then dictionary repair, then the final text. Both rules exist because getting them backwards produces something that looks like it works."
+        },
+        {
+          "id": "d-4186",
+          "at": "2026-07-25T18:02:11+02:00",
+          "relative": "yesterday at 18:02",
+          "app": {
+            "exe": "Code.exe",
+            "label": "Visual Studio Code"
+          },
+          "windowTitle": "db.js — flowstate — Visual Studio Code",
+          "lang": "de",
+          "words": 2,
+          "durationMs": 1900,
+          "wpm": 63,
+          "asrMs": 151,
+          "llmMs": 0,
+          "totalMs": 287,
+          "cleanupApplied": false,
+          "cleanupNote": "Skipped — under the 4-word threshold, so it landed instantly.",
+          "raw": "Migration läuft",
+          "cleaned": "Migration läuft"
+        },
+        {
+          "id": "d-4185",
+          "at": "2026-07-25T11:47:38+02:00",
+          "relative": "yesterday at 11:47",
+          "app": {
+            "exe": "chrome.exe",
+            "label": "Google Chrome"
+          },
+          "windowTitle": "Bürgeramt Termin — Google Chrome",
+          "lang": "de",
+          "words": 23,
+          "durationMs": 11300,
+          "wpm": 122,
+          "asrMs": 501,
+          "llmMs": 2500,
+          "totalMs": 3094,
+          "cleanupApplied": false,
+          "cleanupNote": "DeepSeek did not answer inside 2,500 ms — the raw transcript was pasted rather than making you wait.",
+          "raw": "guten tag ich möchte einen termin für die anmeldebestätigung beim bürgeramt vereinbaren am liebsten nächste woche vormittags wenn das möglich ist vielen dank",
+          "cleaned": "guten tag ich möchte einen termin für die anmeldebestätigung beim bürgeramt vereinbaren am liebsten nächste woche vormittags wenn das möglich ist vielen dank"
+        }
+      ]
+    },
+    {
+      "date": "2026-07-24",
+      "label": "Friday, 24 July",
+      "dictations": 2,
+      "entries": [
+        {
+          "id": "d-4184",
+          "at": "2026-07-24T16:29:04+02:00",
+          "relative": "Friday at 16:29",
+          "app": {
+            "exe": "Discord.exe",
+            "label": "Discord"
+          },
+          "windowTitle": "#general — Dev Club — Discord",
+          "lang": "en",
+          "words": 33,
+          "durationMs": 16400,
+          "wpm": 121,
+          "asrMs": 622,
+          "llmMs": 758,
+          "totalMs": 1470,
+          "cleanupApplied": true,
+          "cleanupNote": "Dictionary repaired 2 terms after the model returned them misspelled: Grafana, Supabase.",
+          "raw": "the graph ana agent is writing to soup a base again i need to check whether the world backup ran before it started because last time it did not and i lost about forty minutes of building",
+          "cleaned": "The Grafana agent is writing to Supabase again. I need to check whether the world backup ran before it started — last time it did not, and I lost about forty minutes of building."
+        },
+        {
+          "id": "d-4183",
+          "at": "2026-07-24T09:15:20+02:00",
+          "relative": "Friday at 09:15",
+          "app": {
+            "exe": "notepad.exe",
+            "label": "Notepad"
+          },
+          "windowTitle": "Untitled — Notepad",
+          "lang": "el",
+          "words": 14,
+          "durationMs": 8100,
+          "wpm": 104,
+          "asrMs": 468,
+          "llmMs": 689,
+          "totalMs": 1301,
+          "cleanupApplied": true,
+          "raw": "ευχαριστώ πολύ για τη βοήθεια θα σου στείλω τη διεύθυνση στη θεσσαλονίκη το βράδυ",
+          "cleaned": "Ευχαριστώ πολύ για τη βοήθεια. Θα σου στείλω τη διεύθυνση στη Θεσσαλονίκη το βράδυ."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Set up Flowstate</title>
+  <link rel="stylesheet" href="../styles/tokens.css">
+  <link rel="stylesheet" href="../styles/base.css">
+  <link rel="stylesheet" href="model-download.css">
+</head>
+<body>
+  <main class="setup" aria-labelledby="setup-title">
+    <div class="setup-mark" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <p class="eyebrow">ONE-TIME SETUP</p>
+    <h1 id="setup-title">Your speech model lives here.</h1>
+    <p class="intro">
+      Flowstate downloads Parakeet once, then transcribes entirely on this
+      computer. Audio never needs to leave it.
+    </p>
+
+    <section class="download-card" aria-live="polite">
+      <div class="status-row">
+        <div>
+          <p class="status-title" data-status-title>Preparing download…</p>
+          <p class="status-detail" data-status-detail>
+            About 488 MB to download and roughly 650 MB on disk.
+          </p>
+        </div>
+        <span class="percent" data-percent>0%</span>
+      </div>
+      <progress data-progress max="100" value="0">0%</progress>
+      <p class="storage-note">
+        Saved in Local AppData, outside the app itself, so updates do not
+        download it again.
+      </p>
+    </section>
+
+    <p class="error" data-error hidden></p>
+    <div class="actions">
+      <button type="button" class="btn secondary" data-cancel>Cancel</button>
+      <button type="button" class="btn primary" data-download hidden>
+        Resume download
+      </button>
+    </div>
+  </main>
+  <script src="model-download.js"></script>
+</body>
+</html>

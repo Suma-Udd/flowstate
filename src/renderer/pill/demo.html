@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recording pill — Flowstate</title>
+
+<script>
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search).get('theme');
+      var mode = q || localStorage.getItem('flowstate.theme');
+      if (mode === 'light' || mode === 'dark') {
+        document.documentElement.setAttribute('data-theme', mode);
+      }
+    } catch (e) { /* private mode — System is a fine default */ }
+  })();
+</script>
+
+<link rel="stylesheet" href="../styles/tokens.css">
+<link rel="stylesheet" href="../styles/base.css">
+<link rel="stylesheet" href="pill.css">
+
+<style>
+/* Demo chrome only. This page is review furniture, not app surface — but the
+   same discipline applies: tokens, no literals, no shadows. */
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  padding: var(--sp-8);
+  min-height: 100vh;
+}
+
+.demo-head { display: flex; flex-direction: column; gap: var(--sp-2); }
+.demo-sub { color: var(--text-dim); max-width: 68ch; }
+
+.demo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.demo-group {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-1);
+  background: var(--surface-alt);
+  border-radius: var(--r-full);
+}
+
+.demo-group button {
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-full);
+  font: var(--t-label);
+  color: var(--text-dim);
+  transition: color var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) var(--ease);
+}
+
+.demo-group button:hover { color: var(--text); }
+
+.demo-group button[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.demo-label {
+  font: var(--t-micro);
+  letter-spacing: var(--t-micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* Two backdrops, pinned to opposite themes. The pill has to be legible over a
+   white document and a black terminal alike, and that is not something you can
+   check by looking at it on one background. */
+.demo-stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(24rem, 1fr));
+  gap: var(--sp-6);
+}
+
+.backdrop {
+  position: relative;
+  overflow: hidden;
+  min-height: 20rem;
+  padding: var(--sp-6);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+.backdrop.is-document { background: var(--surface); color: var(--text); }
+.backdrop.is-terminal { background: var(--bg); color: var(--text-dim); font-family: var(--font-mono); }
+
+.backdrop-title {
+  font: var(--t-micro);
+  letter-spacing: var(--t-micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: var(--sp-4);
+}
+
+.backdrop p { max-width: 44ch; margin-bottom: var(--sp-3); }
+.backdrop.is-terminal p { font-size: var(--t-caption-size); }
+
+.demo-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+  padding: var(--sp-4) var(--sp-5);
+  background: var(--surface);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--r-lg);
+  font-family: var(--font-mono);
+  font-size: var(--t-caption-size);
+  color: var(--text-dim);
+}
+
+.demo-status strong { color: var(--text); font-weight: var(--t-label-weight); }
+.demo-status .is-live { color: var(--accent); }
+.demo-status .is-idle { color: var(--text-faint); }
+</style>
+</head>
+
+<body>
+
+<!-- Must mirror pill.html. tests/pill.test.js asserts the two carry the same
+     glyph and body hooks, so a state added to one cannot be missed here. -->
+<template id="pill-template">
+  <div class="pill-stage" data-pill-stage data-visible="false" data-anim="on">
+    <div class="pill" data-pill data-state="idle-armed">
+      <span class="pill-tint" aria-hidden="true"></span>
+
+      <span class="pill-glyph" aria-hidden="true">
+        <span class="pill-dot" data-glyph="dot"></span>
+        <svg class="pill-icon" data-glyph="check" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round"
+             stroke-linejoin="round" focusable="false">
+          <path d="m5 13 4 4 10-10"/>
+        </svg>
+        <svg class="pill-icon" data-glyph="alert" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="1.75" stroke-linecap="round"
+             stroke-linejoin="round" focusable="false">
+          <path d="M12 4 2 20h20L12 4Z"/><path d="M12 10v5"/><path d="M12 18h.01"/>
+        </svg>
+      </span>
+
+      <span class="pill-body">
+        <span class="pill-wave" data-body="wave" data-pill-wave aria-hidden="true"></span>
+        <span class="pill-shimmer" data-body="shimmer" aria-hidden="true">
+          <span class="pill-shimmer-band"></span>
+        </span>
+        <span class="pill-text" data-body="text" data-pill-text aria-hidden="true"></span>
+      </span>
+
+      <span class="visually-hidden" role="status" aria-live="polite" data-pill-announce></span>
+    </div>
+  </div>
+</template>
+
+<div class="demo">
+  <header class="demo-head">
+    <h1>The recording pill</h1>
+    <p class="demo-sub">Every state the pill can be in, cycling on a timer, with no engine
+      behind it. The waveform is fed a synthetic speech envelope at 30&nbsp;Hz — the same rate
+      main will push real amplitude at — and interpolated to 60&nbsp;fps on <code>transform</code>.
+      The loop readout below is the thing worth watching: it must say <em>stopped</em> in every
+      state but <em>listening</em>, and the moment this tab is hidden.</p>
+  </header>
+
+  <div class="demo-controls">
+    <span class="demo-label">State</span>
+    <div class="demo-group" role="group" aria-label="Pill state" data-states></div>
+
+    <span class="demo-label">Cycle</span>
+    <div class="demo-group" role="group" aria-label="Cycle">
+      <button type="button" data-cycle="on">Auto</button>
+      <button type="button" data-cycle="off">Hold</button>
+    </div>
+
+    <span class="demo-label">Theme</span>
+    <div class="demo-group" role="group" aria-label="Theme">
+      <button type="button" data-theme-set="light">Light</button>
+      <button type="button" data-theme-set="dark">Dark</button>
+      <button type="button" data-theme-set="system">System</button>
+    </div>
+  </div>
+
+  <div class="demo-stages">
+    <section class="backdrop is-document" data-theme="light" data-stage>
+      <p class="backdrop-title">Over a light document</p>
+      <p>Der Bericht ist fertig, aber die Zahlen aus dem zweiten Quartal fehlen noch.</p>
+      <p>Θα το στείλω μόλις τελειώσω με τα υπόλοιπα.</p>
+      <p>The pill has to stay legible against white without a shadow to lean on.</p>
+    </section>
+
+    <section class="backdrop is-terminal" data-theme="dark" data-stage>
+      <p class="backdrop-title">Over a dark terminal</p>
+      <p>$ npm test</p>
+      <p>&gt; node --test</p>
+      <p># tests 64<br># pass 64<br># fail 0</p>
+    </section>
+  </div>
+
+  <p class="demo-status">
+    <span>state <strong data-out-state></strong></span>
+    <span>loop <strong data-out-loop></strong></span>
+    <span>frames <strong data-out-frames></strong></span>
+    <span>amplitude <strong data-out-amp></strong></span>
+  </p>
+</div>
+
+<script src="pill.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var query = new URLSearchParams(location.search);
+
+  /* Both pills are driven from one place, so the two backdrops always show the
+     identical state — the point of the page is the background, not a race. */
+  var template = document.getElementById('pill-template');
+  var pills = Array.prototype.map.call(document.querySelectorAll('[data-stage]'), function (host) {
+    host.appendChild(template.content.cloneNode(true));
+    return FlowPill.createPill({ root: host.querySelector('[data-pill-stage]') });
+  });
+
+  function each(fn) { pills.forEach(fn); }
+
+  /* ---------------------------------------------------------------------
+     The cycle. Durations are roughly what a real dictation feels like: a
+     beat of arming, a few seconds of speech, ASR and cleanup, the paste.
+     `error` is not part of a healthy dictation, so it gets its own slot at
+     the end of the loop rather than interrupting the happy path.
+     --------------------------------------------------------------------- */
+
+  var CYCLE = [
+    { state: 'idle-armed', ms: 900 },
+    { state: 'listening', ms: 4200 },
+    { state: 'thinking', ms: 1600 },
+    { state: 'pasting', ms: 1300 },
+    { state: 'hidden', ms: 700 },
+    { state: 'idle-armed', ms: 700 },
+    { state: 'listening', ms: 2200 },
+    { state: 'error', ms: 2600, reason: 'Microphone unavailable' },
+    { state: 'hidden', ms: 900 }
+  ];
+
+  var step = 0;
+  var timer = null;
+  var cycling = !query.get('state');
+  var current = 'idle-armed';
+
+  function show(state, reason) {
+    current = state;
+    if (state === 'hidden') {
+      each(function (p) { p.setVisible(false); });
+      return;
+    }
+    each(function (p) {
+      p.setState(state, { reason: reason });
+      p.setVisible(true);
+    });
+  }
+
+  function advance() {
+    var entry = CYCLE[step % CYCLE.length];
+    step++;
+    show(entry.state, entry.reason);
+    timer = setTimeout(advance, entry.ms);
+  }
+
+  function stopCycle() {
+    if (timer !== null) { clearTimeout(timer); timer = null; }
+  }
+
+  /* ---------------------------------------------------------------------
+     Synthetic amplitude at 30Hz — the rate the engine notes throttles the real
+     push to. Speech is bursty: syllables on top of a phrase envelope, with
+     pauses where a person breathes. A flat sine would make the waveform look
+     smooth in a way real dictation never does.
+     --------------------------------------------------------------------- */
+
+  var t = 0;
+  var lastAmp = 0;
+
+  function envelope(ms) {
+    var phrase = Math.sin(ms / 1400);          // clauses
+    var breath = Math.sin(ms / 5200);          // where the sentence dips
+    if (phrase < -0.55) return 0.02;           // a pause between clauses
+    /* ~4 syllables a second, which is conversational, plus a faster wobble.
+       Slower than this and 28 bars of history hold barely one syllable, so the
+       wave comes out as a solid block. */
+    var syllable = 0.5 + 0.5 * Math.sin(ms / 40);
+    var jitter = 0.5 + 0.5 * Math.sin(ms / 17 + 1.7);
+    var level = (0.5 + 0.3 * phrase + 0.15 * breath) * (0.35 + 0.65 * syllable);
+    return Math.max(0, Math.min(1, level * (0.7 + 0.3 * jitter)));
+  }
+
+  var feed = null;
+
+  function startFeed() {
+    if (feed !== null) return;
+    feed = setInterval(function () {
+      t += 33;
+      lastAmp = current === 'listening' ? envelope(t) : 0;
+      each(function (p) { p.setAmplitude(lastAmp); });
+    }, 33);
+  }
+
+  function stopFeed() {
+    if (feed === null) return;
+    clearInterval(feed);
+    feed = null;
+  }
+
+  /* ---------------------------------------------------------------------
+     Controls
+     --------------------------------------------------------------------- */
+
+  var stateBar = document.querySelector('[data-states]');
+  stateBar.innerHTML = FlowPill.STATES.concat('hidden').map(function (name) {
+    return '<button type="button" data-state-set="' + name + '">' + name + '</button>';
+  }).join('');
+
+  function syncButtons() {
+    document.querySelectorAll('[data-state-set]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-state-set') === current));
+    });
+    document.querySelectorAll('[data-cycle]').forEach(function (b) {
+      b.setAttribute('aria-pressed', String((b.getAttribute('data-cycle') === 'on') === cycling));
+    });
+    document.querySelectorAll('[data-theme-set]').forEach(function (b) {
+      var now = document.documentElement.getAttribute('data-theme') || 'system';
+      b.setAttribute('aria-pressed', String(b.getAttribute('data-theme-set') === now));
+    });
+  }
+
+  stateBar.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-state-set]');
+    if (!button) return;
+    cycling = false;
+    stopCycle();
+    var name = button.getAttribute('data-state-set');
+    show(name, name === 'error' ? 'Microphone unavailable' : undefined);
+    syncButtons();
+  });
+
+  document.querySelectorAll('[data-cycle]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      cycling = button.getAttribute('data-cycle') === 'on';
+      stopCycle();
+      if (cycling) advance();
+      syncButtons();
+    });
+  });
+
+  /* The pill takes the app's theme, not the theme of whatever it happens to be
+     floating over — so the pinned backdrops must not leak into it. */
+  function pinPillTheme() {
+    var mode = document.documentElement.getAttribute('data-theme');
+    if (!mode) {
+      mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.querySelectorAll('[data-pill-stage]').forEach(function (stage) {
+      stage.setAttribute('data-theme', mode);
+    });
+  }
+
+  document.querySelectorAll('[data-theme-set]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var next = button.getAttribute('data-theme-set');
+      try {
+        if (next === 'system') localStorage.removeItem('flowstate.theme');
+        else localStorage.setItem('flowstate.theme', next);
+      } catch (e) { /* private mode — the attribute below still applies */ }
+
+      if (next === 'system') document.documentElement.removeAttribute('data-theme');
+      else document.documentElement.setAttribute('data-theme', next);
+      pinPillTheme();
+      syncButtons();
+    });
+  });
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', pinPillTheme);
+
+  /* ---------------------------------------------------------------------
+     Readout. `loop` is the one that matters: it is the gate G4 rule made
+     visible, and it should read "stopped" for four of the five states.
+     --------------------------------------------------------------------- */
+
+  var outState = document.querySelector('[data-out-state]');
+  var outLoop = document.querySelector('[data-out-loop]');
+  var outFrames = document.querySelector('[data-out-frames]');
+  var outAmp = document.querySelector('[data-out-amp]');
+  var frames = 0;
+
+  /* This readout is itself a rAF loop, so it stops with the document as well —
+     a demo page that spins while hidden would be a poor advertisement for the
+     rule it exists to demonstrate. */
+  function readout() {
+    if (document.hidden) return;
+    if (pills[0].isRunning()) frames++;
+    outState.textContent = current;
+    outLoop.textContent = pills[0].isRunning() ? 'running' : 'stopped';
+    outLoop.className = pills[0].isRunning() ? 'is-live' : 'is-idle';
+    outFrames.textContent = String(frames);
+    outAmp.textContent = lastAmp.toFixed(2);
+    requestAnimationFrame(readout);
+  }
+  /* Hiding the tab parks the whole page: the readout loop, the 30Hz amplitude
+     feed and the cycle timer. A demo that keeps spinning while hidden would be
+     a poor advertisement for the rule it exists to demonstrate. */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      stopFeed();
+      stopCycle();
+      return;
+    }
+    startFeed();
+    if (cycling) advance();
+    requestAnimationFrame(readout);
+  });
+
+  /* ---------------------------------------------------------------------
+     Boot. `?state=listening` pins one state for a screenshot; without it the
+     page cycles.
+     --------------------------------------------------------------------- */
+
+  pinPillTheme();
+  startFeed();
+
+  var pinned = query.get('state');
+  if (pinned && FlowPill.STATES.concat('hidden').indexOf(pinned) === -1) {
+    throw new Error('unknown ?state= for the pill demo: ' + pinned);
+  }
+  if (pinned) {
+    show(pinned, pinned === 'error' ? 'Microphone unavailable' : undefined);
+  } else {
+    advance();
+  }
+
+  syncButtons();
+  requestAnimationFrame(readout);
+  document.documentElement.setAttribute('data-ready', 'true');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+/* ==========================================================================
+   Flowstate — design tokens
+   Source of truth for every colour in the app.
+
+   Aesthetic (D-008, 2026-10-16): Apple x Nothing. Monochrome first: true
+   black and Apple greys, white/black pill actions, one red "signal" for the
+   live state, monospace uppercase labels, a static dot-matrix texture. It
+   replaces an earlier off-white + teal look. Everything here is
+   static paint: no blur, no shadow, no idle animation, so the window costs
+   nothing while it sits there (gate G4).
+
+   This file is the ONLY place a literal colour, size, radius or duration may
+   appear. A hex code in a screen file is a bug that fails review.
+
+   Themes
+     Light is the default. `data-theme` on <html> forces a theme; with no
+     attribute the app follows the OS (System mode). An inline script in
+     <head> must set the attribute before first paint — no theme flash, ever.
+
+   The palette blocks use bare [data-theme="..."] rather than
+   :root[data-theme="..."] so a subtree can be pinned to a theme. That is what
+   lets swatches.html show both themes side by side on one page. Setting the
+   attribute on <html> behaves identically either way.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Theme-agnostic tokens
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Type families — system fonts only. No bundled font files: they are a
+     dependency, they slow first paint, and Segoe UI Variable is genuinely
+     good on the target OS. */
+  --font-ui: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Cascadia Mono', 'Cascadia Code', 'Consolas', ui-monospace, monospace;
+
+  /* Type scale. Each step is available as a `font` shorthand and as its
+     component parts, for when only the size or weight is needed. */
+  --t-display-size: 40px;
+  --t-display-lh: 1.1;
+  --t-display-weight: 600;
+  --t-display-tracking: -0.035em;
+  --t-display: var(--t-display-weight) var(--t-display-size) / var(--t-display-lh) var(--font-display);
+
+  --t-title-size: 28px;
+  --t-title-lh: 1.2;
+  --t-title-weight: 600;
+  --t-title-tracking: -0.025em;
+  --t-title: var(--t-title-weight) var(--t-title-size) / var(--t-title-lh) var(--font-display);
+
+  --t-heading-size: 20px;
+  --t-heading-lh: 1.3;
+  --t-heading-weight: 600;
+  --t-heading: var(--t-heading-weight) var(--t-heading-size) / var(--t-heading-lh) var(--font-ui);
+
+  --t-body-size: 14px;
+  --t-body-lh: 1.5;
+  --t-body-weight: 400;
+  --t-body: var(--t-body-weight) var(--t-body-size) / var(--t-body-lh) var(--font-ui);
+
+  --t-label-size: 13px;
+  --t-label-lh: 1.4;
+  --t-label-weight: 500;
+  --t-label: var(--t-label-weight) var(--t-label-size) / var(--t-label-lh) var(--font-ui);
+
+  --t-caption-size: 12px;
+  --t-caption-lh: 1.4;
+  --t-caption-weight: 400;
+  --t-caption: var(--t-caption-weight) var(--t-caption-size) / var(--t-caption-lh) var(--font-ui);
+
+  /* --t-micro is the Nothing note in the system: monospace, uppercase,
+     tracked out. The letter-spacing and uppercase are not optional — apply
+     --t-micro-tracking and text-transform alongside the shorthand. */
+  --t-micro-size: 11px;
+  --t-micro-lh: 1.3;
+  --t-micro-weight: 500;
+  --t-micro-tracking: .12em;
+  --t-micro: var(--t-micro-weight) var(--t-micro-size) / var(--t-micro-lh) var(--font-mono);
+
+  /* Spacing */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* Radii */
+  --r-sm: 10px;   /* inputs, key caps */
+  --r-md: 999px;  /* buttons, nav items, tabs, toasts: capsules, Apple-style */
+  --r-box: 14px;  /* notices, list rows, the meter: boxes that hold text */
+  --r-lg: 22px;   /* cards */
+  --r-full: 999px; /* pills, the recording pill, badges */
+
+  /* Borders. Elevation is expressed with --surface against --bg plus a
+     hairline. There is no shadow token because there are no shadows —
+     depth comes from black against grey, never from a blur. */
+  --border-w: 1px;
+
+  /* Motion. Animate transform and opacity only — never width, height, top,
+     left or background-position. */
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --dur-fast: 120ms;  /* hover, focus */
+  --dur-base: 180ms;  /* pill entry/exit, panel transitions */
+  --dur-slow: 260ms;  /* route changes */
+
+  /* Dot-matrix texture: one dot per --dot-gap, painted once, never animated. */
+  --dot-size: 1px;
+  --dot-gap: 14px;
+
+  /* Layout constants that more than one screen depends on. */
+  --sidebar-w: 240px;
+  --win-min-w: 900px;
+  --win-min-h: 640px;
+
+  /* Z-layers. Named, so nothing ever invents a z-index: 9999. */
+  --z-base: 0;
+  --z-raised: 10;    /* cards lifting on hover, sticky table headers */
+  --z-sticky: 100;   /* sidebar, tab strip */
+  --z-dropdown: 200; /* menus, comboboxes, autocomplete */
+  --z-scrim: 300;    /* dialog backdrop */
+  --z-modal: 400;    /* dialogs, confirmations */
+  --z-toast: 500;    /* transient notifications */
+  --z-pill: 600;     /* the recording pill overlay */
+}
+
+/* --------------------------------------------------------------------------
+   Light palette — the default
+   -------------------------------------------------------------------------- */
+
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #F5F5F7;             /* app canvas, sidebar */
+  --surface: #FFFFFF;        /* cards, content panel */
+  --surface-alt: #F2F2F4;    /* inset areas, table stripes, inputs */
+  --surface-hover: #EAEAEC;  /* row and button hover */
+
+  --border: #E5E5EA;         /* hairlines, card edges */
+  --border-strong: #D1D1D6;  /* input borders, dividers that must read */
+
+  --text: #1D1D1F;           /* primary text */
+  --text-dim: #636366;       /* labels, captions, metadata, placeholders */
+  --text-faint: #AEAEB2;     /* disabled only — see note below */
+
+  --accent: #1D1D1F;         /* primary action, gauges, active nav: ink */
+  --accent-hover: #000000;
+  --accent-soft: #E8E8ED;    /* selected fills, active nav */
+  --accent-text: #FFFFFF;    /* text on accent */
+
+  --signal: #FF3B30;         /* the live red dot: recording, brand mark */
+
+  --danger: #D70015;
+  --danger-soft: #FDECEC;
+  --warn: #A86200;
+  --success: #1A7332;
+
+  /* Data ramp — app-usage bars and the streak heatmap. Light to dark. */
+  --ramp-1: #E5E5EA;
+  --ramp-2: #AEAEB2;
+  --ramp-3: #636366;
+  --ramp-4: #1D1D1F;
+}
+
+/* --------------------------------------------------------------------------
+   Dark palette — System mode fallback
+
+   Applies only when <html> carries no explicit theme. True black canvas
+   (it costs nothing on an OLED panel and reads as Nothing), Apple's dark
+   greys for surfaces, and a first-class citizen rather than light inverted.
+
+   NOTE: these declarations are duplicated in the [data-theme='dark'] block
+   below because CSS cannot share a body between a media query and a bare
+   selector without a build step, and this project has no build step.
+   tests/tokens-contrast.test.js asserts the two blocks stay identical.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --bg: #000000;
+    --surface: #0E0E10;
+    --surface-alt: #161618;
+    --surface-hover: #1C1C1E;
+
+    --border: #1F1F22;
+    --border-strong: #2C2C2E;
+
+    --text: #F5F5F7;
+    --text-dim: #98989D;
+    --text-faint: #5A5A5E;
+
+    --accent: #F5F5F7;
+    --accent-hover: #FFFFFF;
+    --accent-soft: #262629;
+    --accent-text: #000000;
+
+    --signal: #FF453A;
+
+    --danger: #FF453A;
+    --danger-soft: #2A0F0D;
+    --warn: #FFD60A;
+    --success: #30D158;
+
+    /* The dark ramp is NOT the light ramp dimmed. It ramps toward brightness
+       because dark backgrounds read intensity as light, not as depth.
+       Getting this wrong is the most common dark-mode data-viz mistake. */
+    --ramp-1: #262629;
+    --ramp-2: #48484A;
+    --ramp-3: #8E8E93;
+    --ramp-4: #F5F5F7;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Dark palette — explicit
+   -------------------------------------------------------------------------- */
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #000000;
+  --surface: #0E0E10;
+  --surface-alt: #161618;
+  --surface-hover: #1C1C1E;
+
+  --border: #1F1F22;
+  --border-strong: #2C2C2E;
+
+  --text: #F5F5F7;
+  --text-dim: #98989D;
+  --text-faint: #5A5A5E;
+
+  --accent: #F5F5F7;
+  --accent-hover: #FFFFFF;
+  --accent-soft: #262629;
+  --accent-text: #000000;
+
+  --signal: #FF453A;
+
+  --danger: #FF453A;
+  --danger-soft: #2A0F0D;
+  --warn: #FFD60A;
+  --success: #30D158;
+
+  /* The dark ramp is NOT the light ramp dimmed. It ramps toward brightness
+     because dark backgrounds read intensity as light, not as depth.
+     Getting this wrong is the most common dark-mode data-viz mistake. */
+  --ramp-1: #262629;
+  --ramp-2: #48484A;
+  --ramp-3: #8E8E93;
+  --ramp-4: #F5F5F7;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+
+   Zeroes every duration token rather than blanket-killing animation, so
+   transitions still resolve to their end state and nothing gets stuck
+   mid-transform. base.css adds the matching belt-and-braces override.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Palette notes — all pairs contrast-verified by tests/tokens.test.js
+
+   1. Accent is ink, not a hue. Primary actions are black capsules in light
+      and white capsules in dark; colour is reserved for --signal (live/red)
+      and status. That restraint is most of the Apple x Nothing look.
+
+   2. --text-faint is disabled-only (~2:1). Disabled controls are exempt from
+      WCAG 1.4.3; placeholder text is not, so base.css renders placeholders in
+      --text-dim.
+
+   3. --border-strong is a decorative hairline, not a component boundary.
+      Inputs are identified by their --surface-alt fill and their label, and
+      the focus ring (--accent) carries the non-text contrast obligation.
+
+   4. --warn (light) #A86200 clears 4.5:1 on --surface only; on every tint it
+      falls short, which is why .notice.is-warn stays an outlined callout.
+   -------------------------------------------------------------------------- */

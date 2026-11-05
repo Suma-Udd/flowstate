@@ -1,0 +1,97 @@
+{
+  "_note": "Placeholder data shown before live data arrives, and used for the README screenshots.",
+
+  "general": {
+    "hotkey": {
+      "chord": ["Ctrl", "Win"],
+      "hint": "Hold to talk. A tap under 300 ms cancels silently."
+    },
+    "microphone": {
+      "selectedDeviceId": "9f4b0182",
+      "selectedLabel": "Yeti Nano (USB Microphone)",
+      "hint": "Bluetooth headsets drop to the narrowband hands-free profile when the mic opens."
+    },
+    "languages": {
+      "enabled": ["en", "de", "el"],
+      "summary": "English · Deutsch · Ελληνικά",
+      "hint": "Parakeet auto-detects between the enabled languages. Fewer languages does not make it faster."
+    },
+    "theme": {
+      "mode": "system",
+      "options": [
+        { "key": "light", "label": "Light" },
+        { "key": "dark", "label": "Dark" },
+        { "key": "system", "label": "System" }
+      ]
+    },
+    "cleanup": {
+      "enabled": true,
+      "provider": "DeepSeek",
+      "apiKeyConfigured": true,
+      "timeoutMs": 2500,
+      "skipUnderWords": 4,
+      "hint": "Cleanup is an enhancement, never a dependency. On timeout the raw transcript is pasted instead."
+    },
+    "fillers": {
+      "removeFillers": true,
+      "hint": "Drops \"um\", \"uh\", \"like\" and their German and Greek equivalents."
+    }
+  },
+
+  "system": {
+    "autostart": { "enabled": true, "hint": "Registered under the Windows Run key, verified by read-back." },
+    "startMinimised": { "enabled": true, "hint": "Starts in the tray with no window." },
+    "closeToTray": { "enabled": true, "hint": "Closing the window destroys it; Flowstate keeps running in the tray." },
+    "model": {
+      "name": "Parakeet TDT 0.6B v3",
+      "quantisation": "int8",
+      "sizeMb": 642,
+      "status": "loaded",
+      "location": "%APPDATA%\\flowstate\\models\\parakeet-tdt-0.6b-v3-int8",
+      "unloadAfterMinutes": 15,
+      "unloadOptions": [5, 15, 30, 0],
+      "unloadHint": "0 keeps the model resident. Unloading frees about 700 MB and costs one cold load."
+    },
+    "history": {
+      "retentionDays": 0,
+      "retentionLabel": "Keep everything",
+      "retentionOptions": [
+        { "days": 7, "label": "7 days" },
+        { "days": 30, "label": "30 days" },
+        { "days": 365, "label": "1 year" },
+        { "days": 0, "label": "Keep everything" }
+      ],
+      "dictations": 1204,
+      "databaseSizeMb": 18.4,
+      "location": "%APPDATA%\\flowstate\\flowstate.db"
+    }
+  },
+
+  "about": {
+    "appVersion": "0.1.0-dev",
+    "electronVersion": "43.2.0",
+    "nodeVersion": "22.20.0",
+    "modelVersion": "sherpa-onnx-nemo-parakeet-tdt-0.6b-v3-int8",
+    "sherpaVersion": "1.13.4",
+    "platform": "Windows 11 26200 · 8 cores · 16 GB",
+    "configLocation": "%APPDATA%\\flowstate\\config.json",
+    "logLocation": "%APPDATA%\\flowstate\\logs",
+    "docs": [
+      { "label": "Read the README", "target": "readme" },
+      { "label": "Report a problem", "target": "issues" },
+      { "label": "Release notes", "target": "releases" },
+      { "label": "MIT license", "target": "license" }
+    ],
+    "recentErrors": [
+      {
+        "at": "2026-07-25T11:47:41+02:00",
+        "message": "llm: provider timed out after 2500 ms — pasted the raw transcript"
+      },
+      {
+        "at": "2026-07-22T09:03:18+02:00",
+        "message": "inject: target window was elevated — text left on the clipboard"
+      }
+    ],
+    "diagnosticsHint": "Copies versions, paths and the last errors. Never the API key."
+  }
+}

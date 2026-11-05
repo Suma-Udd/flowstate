@@ -1,0 +1,179 @@
+{
+  "_note": "Placeholder data shown before live data arrives, and used for the README screenshots.",
+  "hotkey": {
+    "chord": [
+      "Ctrl",
+      "Win"
+    ],
+    "holdToTalk": true,
+    "tapCancelMs": 300
+  },
+  "microphones": [
+    {
+      "deviceId": "default",
+      "label": "Microphone (Realtek(R) Audio)",
+      "isDefault": true,
+      "profile": "wideband"
+    },
+    {
+      "deviceId": "0d1e3a7c",
+      "label": "Galaxy Buds3 Pro (Hands-Free)",
+      "isDefault": false,
+      "profile": "hfp",
+      "note": "Bluetooth headsets drop to the narrowband hands-free profile when the mic opens, which costs accuracy."
+    },
+    {
+      "deviceId": "9f4b0182",
+      "label": "Yeti Nano (USB Microphone)",
+      "isDefault": false,
+      "profile": "wideband"
+    }
+  ],
+  "selectedDeviceId": "9f4b0182",
+  "inputLevel": {
+    "peak": 0.71,
+    "rms": 0.42,
+    "bars": [
+      0.08,
+      0.22,
+      0.41,
+      0.63,
+      0.71,
+      0.58,
+      0.44,
+      0.31,
+      0.19,
+      0.26,
+      0.38,
+      0.55,
+      0.67,
+      0.61,
+      0.47,
+      0.33,
+      0.21,
+      0.12,
+      0.06,
+      0.04,
+      0.11,
+      0.29,
+      0.48,
+      0.66,
+      0.7,
+      0.62,
+      0.51,
+      0.39,
+      0.28,
+      0.35,
+      0.46,
+      0.57,
+      0.52,
+      0.4,
+      0.3,
+      0.22,
+      0.15,
+      0.1,
+      0.07,
+      0.05
+    ]
+  },
+  "languages": [
+    {
+      "code": "en",
+      "label": "English",
+      "native": "English",
+      "enabled": true
+    },
+    {
+      "code": "de",
+      "label": "German",
+      "native": "Deutsch",
+      "enabled": true
+    },
+    {
+      "code": "el",
+      "label": "Greek",
+      "native": "Ελληνικά",
+      "enabled": true
+    }
+  ],
+  "autoDetect": {
+    "enabled": true,
+    "lastDetected": "de",
+    "lastDetectedAt": "2026-07-26T16:38:12+02:00"
+  },
+  "model": {
+    "name": "Parakeet TDT 0.6B v3",
+    "quantisation": "int8",
+    "sizeMb": 642,
+    "status": "loaded",
+    "coldLoadMs": 1840,
+    "unloadAfterMinutes": 15,
+    "location": "%APPDATA%\\flowstate\\models\\parakeet-tdt-0.6b-v3-int8"
+  },
+  "today": {
+    "dictations": 4,
+    "words": 63
+  },
+  "recent": [
+    {
+      "id": "d-4192",
+      "at": "2026-07-26T16:38:12+02:00",
+      "relative": "2 minutes ago",
+      "app": {
+        "exe": "Discord.exe",
+        "label": "Discord"
+      },
+      "lang": "de",
+      "words": 22,
+      "text": "Kannst du bitte den Pull Request für die Authentifizierung noch heute durchsehen? Ich habe die Migration schon getestet, sie läuft sauber durch."
+    },
+    {
+      "id": "d-4191",
+      "at": "2026-07-26T16:11:47+02:00",
+      "relative": "29 minutes ago",
+      "app": {
+        "exe": "Code.exe",
+        "label": "Visual Studio Code"
+      },
+      "lang": "en",
+      "words": 24,
+      "text": "I think we should move the retry logic out of the dictation path — it just adds another timeout the user has to sit through."
+    },
+    {
+      "id": "d-4190",
+      "at": "2026-07-26T15:52:03+02:00",
+      "relative": "48 minutes ago",
+      "app": {
+        "exe": "WindowsTerminal.exe",
+        "label": "Windows Terminal"
+      },
+      "lang": "en",
+      "words": 2,
+      "text": "ssh alex@10.0.0.5"
+    },
+    {
+      "id": "d-4189",
+      "at": "2026-07-26T14:07:29+02:00",
+      "relative": "2 hours ago",
+      "app": {
+        "exe": "chrome.exe",
+        "label": "Google Chrome"
+      },
+      "lang": "el",
+      "words": 15,
+      "text": "Θα στείλω τις σημειώσεις της συνάντησης το απόγευμα, μόλις τελειώσω με τον έλεγχο των δεδομένων."
+    },
+    {
+      "id": "d-4188",
+      "at": "2026-07-26T11:34:55+02:00",
+      "relative": "5 hours ago",
+      "app": {
+        "exe": "Obsidian.exe",
+        "label": "Obsidian"
+      },
+      "lang": "en",
+      "words": 32,
+      "text": "The Grafana agent is writing to Supabase again — worth checking whether the world backup ran before it started, because last time it did not and I lost about forty minutes of building."
+    }
+  ]
+}

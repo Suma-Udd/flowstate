@@ -1,0 +1,614 @@
+/* ==========================================================================
+   Flowstate — screen-specific layout
+
+   Requires tokens.css, base.css and app.css, in that order. Same rule: no
+   literal colour, spacing value, radius or duration. Where a screen needs a
+   dimension the scale does not carry, it is derived with calc() over tokens in
+   a local custom property so it still traces back to the scale.
+
+   SVG geometry (stroke-width, radii, viewBox) lives on the elements as
+   attributes rather than in CSS: it is drawing, not layout, and keeping it in
+   the markup means the CSS here stays purely about colour and placement.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Dictation — the hotkey chord as real key caps
+
+   "Large, unmistakable." This is the one thing on the screen a new install
+   needs to read from across the desk.
+   -------------------------------------------------------------------------- */
+
+.chord {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.chord .kbd {
+  min-width: calc(var(--sp-16) + var(--sp-6));
+  padding: var(--sp-3) var(--sp-5);
+  font-size: var(--t-heading-size);
+  line-height: var(--t-heading-lh);
+}
+
+.chord-plus {
+  font: var(--t-heading);
+  color: var(--text-faint);
+}
+
+.chord-hint {
+  margin-top: var(--sp-4);
+  font: var(--t-body);
+  color: var(--text-dim);
+  max-width: 52ch;
+}
+
+/* --- microphone level meter ----------------------------------------------
+
+   A dead mic has to be obvious in one glance, so the meter is the largest
+   thing in the microphone card rather than a 4px line under the picker.
+   Bars scale on transform only — never height — so the live version in #18
+   can drive this at 30Hz without laying out every frame.
+   -------------------------------------------------------------------------- */
+
+.meter {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--sp-1);
+  height: var(--sp-10);
+  padding: var(--sp-2);
+  background: var(--surface-alt);
+  border-radius: var(--r-box);
+}
+
+.meter-bar {
+  flex: 1;
+  height: 100%;
+  min-width: var(--border-w);
+  background: var(--accent);
+  /* --r-sm, not --r-full: scaleY squashes the radius along with the box, and a
+     pill scaled to 0.2 renders as a lozenge rather than a bar. */
+  border-radius: var(--r-sm);
+  transform: scaleY(var(--level));
+  transform-origin: bottom;
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.meter-scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--sp-2);
+  font: var(--t-caption);
+  color: var(--text-dim);
+}
+
+/* --------------------------------------------------------------------------
+   Insights — WPM arc gauge
+
+   A 270-degree arc with the gap at the bottom, drawn with stroke-dasharray so
+   there is no dependency and nothing to animate. The number sits in the middle
+   in --t-display; the caption under it is --t-micro, which is what makes the
+   stat cards read as a considered product rather than a generic dashboard.
+   -------------------------------------------------------------------------- */
+
+.gauge,
+.gauge-bounds {
+  /* One measure shared by the dial and its scale labels. When the card is wider
+     than the dial — which it is at 900px, where the stat row stacks — the labels
+     must stay pinned to the ends of the arc rather than to the card edges. */
+  width: 100%;
+  max-width: calc(var(--sp-16) * 3);
+  margin-inline: auto;
+}
+
+.gauge { position: relative; }
+
+.gauge svg {
+  width: 100%;
+  height: auto;
+  /* The dash geometry starts at 3 o'clock; rotating by 135deg puts the gap at
+     the bottom, symmetrical about the vertical. */
+  transform: rotate(135deg);
+}
+
+.gauge-track {
+  fill: none;
+  stroke: var(--surface-alt);
+}
+
+.gauge-value {
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+}
+
+.gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.gauge-bounds {
+  display: flex;
+  justify-content: space-between;
+  /* Pulled up into the arc's bottom gap, which is exactly where a dial's end
+     labels belong. */
+  margin-top: calc(var(--sp-4) * -1);
+  font: var(--t-caption);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --------------------------------------------------------------------------
+   Insights — app usage and language breakdown
+
+   Icon on the left spanning both rows, name and percentage on the first row,
+   the bar underneath. Stacking the bar instead of putting it beside the label
+   is what lets this survive 900px without truncating "Visual Studio Code".
+   -------------------------------------------------------------------------- */
+
+.usage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.usage-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: var(--sp-3);
+  row-gap: var(--sp-2);
+  min-width: 0;
+}
+
+.usage-icon {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: var(--sp-8);
+  height: var(--sp-8);
+  background: var(--surface-alt);
+  border-radius: var(--r-sm);
+  color: var(--text-dim);
+}
+
+.usage-icon svg {
+  width: var(--sp-4);
+  height: var(--sp-4);
+}
+
+/* The language breakdown puts the ISO code in the icon box instead of a glyph —
+   "EN" says more than any icon of a language could. */
+.usage-code {
+  font: var(--t-micro);
+  letter-spacing: var(--t-micro-tracking);
+  color: var(--text-dim);
+}
+
+.usage-name {
+  font: var(--t-label);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.usage-value {
+  font: var(--t-label);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.usage-track {
+  grid-column: 2 / span 2;
+  height: var(--sp-2);
+  background: var(--surface-alt);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+
+.usage-fill {
+  /* block, not the inline default a <span> gets: an inline box ignores height,
+     which renders every bar as an empty track. */
+  display: block;
+  height: 100%;
+  border-radius: var(--r-full);
+  background: var(--ramp-2);
+}
+
+.usage-fill.is-r1 { background: var(--ramp-1); }
+.usage-fill.is-r2 { background: var(--ramp-2); }
+.usage-fill.is-r3 { background: var(--ramp-3); }
+.usage-fill.is-r4 { background: var(--ramp-4); }
+
+/* --------------------------------------------------------------------------
+   Insights — streak heatmap
+
+   GitHub-style: weekdays down, weeks across, four density steps from the data
+   ramp. The cell is --sp-3 with an --sp-1 gutter, so thirteen weeks measure
+   about 208px and fit the 900px window with room to spare. The grid still
+   lives in a scroll container: a 52-week view is issue #31's problem, and it
+   should not be a layout failure when it arrives.
+   -------------------------------------------------------------------------- */
+
+.heatmap {
+  --cell: var(--sp-3);
+  --cell-gap: var(--sp-1);
+  display: flex;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.heatmap-weekdays {
+  display: grid;
+  grid-template-rows: repeat(7, var(--cell));
+  gap: var(--cell-gap);
+  /* Push the weekday column down past the month label row so Mon lines up with
+     the first cell rather than with the label. */
+  margin-top: calc(var(--t-caption-size) * var(--t-caption-lh) + var(--cell-gap));
+  font: var(--t-caption);
+  color: var(--text-dim);
+}
+
+.heatmap-weekdays span {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.heatmap-scroll {
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: var(--sp-1);
+}
+
+.heatmap-months {
+  display: grid;
+  gap: var(--cell-gap);
+  font: var(--t-caption);
+  color: var(--text-dim);
+  margin-bottom: var(--cell-gap);
+  white-space: nowrap;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(7, var(--cell));
+  gap: var(--cell-gap);
+}
+
+.heat-cell {
+  width: var(--cell);
+  height: var(--cell);
+  border-radius: calc(var(--r-sm) / 2);
+  background: var(--surface-alt);
+}
+
+.heat-cell.is-l1 { background: var(--ramp-1); }
+.heat-cell.is-l2 { background: var(--ramp-2); }
+.heat-cell.is-l3 { background: var(--ramp-3); }
+.heat-cell.is-l4 { background: var(--ramp-4); }
+
+/* An out-of-window cell keeps the grid rectangular without pretending there
+   was a day there. Invisible, but it still occupies its track. */
+.heat-cell.is-void { background: transparent; }
+
+.heat-legend {
+  --cell: var(--sp-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font: var(--t-caption);
+  color: var(--text-dim);
+}
+
+.heat-legend .heat-cell { flex: none; }
+
+.streak-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8);
+}
+
+.streak-figure .stat-value { font: var(--t-title); }
+
+/* --------------------------------------------------------------------------
+   History — raw versus cleaned
+
+   The important part of the whole screen. Raw sits in dim text, cleaned in
+   full-strength text, so the hierarchy itself says which one you actually got.
+   Over months this is how the cleanup pass earns trust.
+   -------------------------------------------------------------------------- */
+
+.compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+}
+
+.compare-pane {
+  padding: var(--sp-4);
+  background: var(--surface-alt);
+  border-radius: var(--r-box);
+  min-width: 0;
+}
+
+.compare-pane.is-cleaned {
+  background: var(--accent-soft);
+}
+
+.compare-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+  font: var(--t-micro);
+  letter-spacing: var(--t-micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.compare-text {
+  font: var(--t-body);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--text-dim);
+}
+
+.compare-pane.is-cleaned .compare-text { color: var(--text); }
+
+.timings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: var(--border-w) solid var(--border);
+}
+
+.timings div { min-width: 0; }
+
+.timings dt {
+  font: var(--t-micro);
+  letter-spacing: var(--t-micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.timings dd {
+  margin: var(--sp-1) 0 0;
+  font: var(--t-body);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A history row is a <details>: expanding is keyboard-operable and announced
+   correctly with no JS. Any display other than list-item drops the disclosure
+   triangle in Chromium; the two rules below make that explicit rather than
+   incidental, because .list-item's display is not this rule's business. */
+.entry summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.entry summary::-webkit-details-marker { display: none; }
+
+.entry-caret {
+  width: var(--sp-4);
+  height: var(--sp-4);
+  color: var(--text-dim);
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.entry[open] .entry-caret { transform: rotate(180deg); }
+
+.entry-body {
+  padding: 0 var(--sp-4) var(--sp-4);
+}
+
+.entry-text {
+  font: var(--t-body);
+  overflow-wrap: anywhere;
+}
+
+/* --------------------------------------------------------------------------
+   Dictionary and snippets — expansion preview
+
+   #25 must feel identical to #24, not merely similar, so both screens use the
+   same list, the same search field and the same preview block.
+   -------------------------------------------------------------------------- */
+
+.expansion {
+  margin-top: var(--sp-2);
+  padding: var(--sp-3);
+  background: var(--surface-alt);
+  border-radius: var(--r-sm);
+  font-family: var(--font-mono);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-body-lh);
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.sounds-like {
+  font-family: var(--font-mono);
+  font-size: var(--t-caption-size);
+  color: var(--text-dim);
+}
+
+.list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  align-items: center;
+  margin-bottom: var(--sp-4);
+}
+
+/* A select inside a .field fills its column; a select in a toolbar sits beside
+   the search box. Without this the 100% width sends every filter to its own
+   line and the toolbar becomes a stack of full-width dropdowns. */
+.list-toolbar > .select {
+  flex: none;
+  width: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Scratchpad — the quiet editor
+
+   No borders, no fill, no chrome. A 68ch measure because the point of this
+   screen is reading back a long thought, and 68 characters is where a line
+   stops being comfortable.
+   -------------------------------------------------------------------------- */
+
+.editor-wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.editor {
+  flex: 1;
+  width: 100%;
+  /* The measure comes from padding, not from max-width plus auto margins,
+     because the textarea is its own scroll container: constrain the box and the
+     scrollbar ends up floating in the middle of the pane. max() keeps the
+     padding at zero once the pane is narrower than the measure. */
+  padding-inline: max(0px, calc((100% - 68ch) / 2));
+  padding-block: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: var(--t-body);
+  resize: none;
+  overflow-y: auto;
+}
+
+.editor:focus-visible {
+  outline: none; /* the whole pane is the field; a ring around it reads as a box */
+}
+
+.editor-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: var(--border-w) solid var(--border);
+}
+
+.counts {
+  display: flex;
+  gap: var(--sp-5);
+  font: var(--t-caption);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The scratchpad is the one screen that fills the pane rather than scrolling a
+   document, so its content column is a flex column at full height. */
+.content.is-fill {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* the editor scrolls, not the pane */
+}
+
+/* --------------------------------------------------------------------------
+   About — diagnostics rows
+   -------------------------------------------------------------------------- */
+
+.facts {
+  display: grid;
+  /* 12rem, not 16: the About card is about half the content pane, and a 16rem
+     floor plus the column gap needs 536px for two columns where there are 502.
+     One column of eight short facts is a lot of vertical scrolling for nothing. */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+  gap: var(--sp-4) var(--sp-6);
+}
+
+.facts dt {
+  font: var(--t-micro);
+  letter-spacing: var(--t-micro-tracking);
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.facts dd {
+  margin: var(--sp-1) 0 0;
+  font: var(--t-body);
+  overflow-wrap: anywhere;
+}
+
+.error-log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.error-log li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-body-lh);
+  color: var(--text-dim);
+}
+
+.error-log time { color: var(--text-faint); }
+
+.link-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  align-items: flex-start;
+}
+
+/* Anchor in the #09 mockups, button in the live shell: inside a hash-routed SPA
+   an <a href="#"> would navigate the router, so the doc links are buttons that
+   #19 hands to main. Both are styled here so the two cannot drift. */
+.link-list a,
+.link-list button {
+  font: var(--t-body);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.link-list a:hover,
+.link-list button:hover { text-decoration: underline; }
+
+.link-list svg {
+  flex: none;
+  width: var(--sp-4);
+  height: var(--sp-4);
+}
+
+/* Search-match highlight (History). Weight and underline carry the meaning;
+   the fill is only a hint, so it stays readable in both themes. */
+mark.hit {
+  background: var(--accent-soft);
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  border-radius: var(--r-sm);
+}
+
+/* Clear asks twice: the first press arms it, the second does it. */
+.btn.is-danger[data-confirm] {
+  background: var(--danger-soft);
+}
+
+.btn[hidden] {
+  display: none;
+}

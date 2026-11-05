@@ -1,0 +1,460 @@
+{
+  "_note": "Placeholder data shown before live data arrives, and used for the README screenshots.",
+  "generatedAt": "2026-07-26T16:42:00+02:00",
+  "period": {
+    "key": "last30",
+    "label": "Last 30 days",
+    "days": 30
+  },
+  "wpm": {
+    "median": 132,
+    "percentile": null,
+    "sampleSize": 303,
+    "scaleMax": 200
+  },
+  "fixes": {
+    "wordsChanged": 1148,
+    "dictionaryCorrections": 96,
+    "dictationsTouched": 241
+  },
+  "words": {
+    "period": 24913,
+    "allTime": 114380
+  },
+  "dictations": {
+    "period": 303,
+    "allTime": 1204
+  },
+  "byApp": [
+    {
+      "exe": "Code.exe",
+      "label": "Visual Studio Code",
+      "category": "editor",
+      "dictations": 112,
+      "percent": 37
+    },
+    {
+      "exe": "chrome.exe",
+      "label": "Google Chrome",
+      "category": "browser",
+      "dictations": 71,
+      "percent": 23.4
+    },
+    {
+      "exe": "Discord.exe",
+      "label": "Discord",
+      "category": "chat",
+      "dictations": 48,
+      "percent": 15.8
+    },
+    {
+      "exe": "Obsidian.exe",
+      "label": "Obsidian",
+      "category": "notes",
+      "dictations": 37,
+      "percent": 12.2
+    },
+    {
+      "exe": "WindowsTerminal.exe",
+      "label": "Windows Terminal",
+      "category": "terminal",
+      "dictations": 24,
+      "percent": 7.9
+    },
+    {
+      "exe": "notepad.exe",
+      "label": "Notepad",
+      "category": "notes",
+      "dictations": 11,
+      "percent": 3.6
+    }
+  ],
+  "byLanguage": [
+    {
+      "code": "en",
+      "label": "English",
+      "dictations": 208,
+      "percent": 68.6
+    },
+    {
+      "code": "de",
+      "label": "Deutsch",
+      "dictations": 71,
+      "percent": 23.4
+    },
+    {
+      "code": "el",
+      "label": "Ελληνικά",
+      "dictations": 24,
+      "percent": 7.9
+    }
+  ],
+  "streak": {
+    "current": 11,
+    "longest": 14,
+    "activeDays": 77,
+    "windowDays": 90,
+    "days": [
+      {
+        "date": "2026-04-28",
+        "count": 8
+      },
+      {
+        "date": "2026-04-29",
+        "count": 5
+      },
+      {
+        "date": "2026-04-30",
+        "count": 0
+      },
+      {
+        "date": "2026-05-01",
+        "count": 8
+      },
+      {
+        "date": "2026-05-02",
+        "count": 0
+      },
+      {
+        "date": "2026-05-03",
+        "count": 5
+      },
+      {
+        "date": "2026-05-04",
+        "count": 9
+      },
+      {
+        "date": "2026-05-05",
+        "count": 14
+      },
+      {
+        "date": "2026-05-06",
+        "count": 16
+      },
+      {
+        "date": "2026-05-07",
+        "count": 0
+      },
+      {
+        "date": "2026-05-08",
+        "count": 13
+      },
+      {
+        "date": "2026-05-09",
+        "count": 0
+      },
+      {
+        "date": "2026-05-10",
+        "count": 4
+      },
+      {
+        "date": "2026-05-11",
+        "count": 7
+      },
+      {
+        "date": "2026-05-12",
+        "count": 5
+      },
+      {
+        "date": "2026-05-13",
+        "count": 12
+      },
+      {
+        "date": "2026-05-14",
+        "count": 11
+      },
+      {
+        "date": "2026-05-15",
+        "count": 13
+      },
+      {
+        "date": "2026-05-16",
+        "count": 2
+      },
+      {
+        "date": "2026-05-17",
+        "count": 0
+      },
+      {
+        "date": "2026-05-18",
+        "count": 13
+      },
+      {
+        "date": "2026-05-19",
+        "count": 6
+      },
+      {
+        "date": "2026-05-20",
+        "count": 0
+      },
+      {
+        "date": "2026-05-21",
+        "count": 8
+      },
+      {
+        "date": "2026-05-22",
+        "count": 6
+      },
+      {
+        "date": "2026-05-23",
+        "count": 0
+      },
+      {
+        "date": "2026-05-24",
+        "count": 1
+      },
+      {
+        "date": "2026-05-25",
+        "count": 16
+      },
+      {
+        "date": "2026-05-26",
+        "count": 13
+      },
+      {
+        "date": "2026-05-27",
+        "count": 16
+      },
+      {
+        "date": "2026-05-28",
+        "count": 15
+      },
+      {
+        "date": "2026-05-29",
+        "count": 8
+      },
+      {
+        "date": "2026-05-30",
+        "count": 0
+      },
+      {
+        "date": "2026-05-31",
+        "count": 2
+      },
+      {
+        "date": "2026-06-01",
+        "count": 14
+      },
+      {
+        "date": "2026-06-02",
+        "count": 14
+      },
+      {
+        "date": "2026-06-03",
+        "count": 9
+      },
+      {
+        "date": "2026-06-04",
+        "count": 6
+      },
+      {
+        "date": "2026-06-05",
+        "count": 13
+      },
+      {
+        "date": "2026-06-06",
+        "count": 2
+      },
+      {
+        "date": "2026-06-07",
+        "count": 4
+      },
+      {
+        "date": "2026-06-08",
+        "count": 4
+      },
+      {
+        "date": "2026-06-09",
+        "count": 7
+      },
+      {
+        "date": "2026-06-10",
+        "count": 14
+      },
+      {
+        "date": "2026-06-11",
+        "count": 12
+      },
+      {
+        "date": "2026-06-12",
+        "count": 4
+      },
+      {
+        "date": "2026-06-13",
+        "count": 0
+      },
+      {
+        "date": "2026-06-14",
+        "count": 5
+      },
+      {
+        "date": "2026-06-15",
+        "count": 15
+      },
+      {
+        "date": "2026-06-16",
+        "count": 5
+      },
+      {
+        "date": "2026-06-17",
+        "count": 14
+      },
+      {
+        "date": "2026-06-18",
+        "count": 7
+      },
+      {
+        "date": "2026-06-19",
+        "count": 6
+      },
+      {
+        "date": "2026-06-20",
+        "count": 1
+      },
+      {
+        "date": "2026-06-21",
+        "count": 5
+      },
+      {
+        "date": "2026-06-22",
+        "count": 5
+      },
+      {
+        "date": "2026-06-23",
+        "count": 4
+      },
+      {
+        "date": "2026-06-24",
+        "count": 7
+      },
+      {
+        "date": "2026-06-25",
+        "count": 14
+      },
+      {
+        "date": "2026-06-26",
+        "count": 6
+      },
+      {
+        "date": "2026-06-27",
+        "count": 5
+      },
+      {
+        "date": "2026-06-28",
+        "count": 0
+      },
+      {
+        "date": "2026-06-29",
+        "count": 17
+      },
+      {
+        "date": "2026-06-30",
+        "count": 18
+      },
+      {
+        "date": "2026-07-01",
+        "count": 14
+      },
+      {
+        "date": "2026-07-02",
+        "count": 13
+      },
+      {
+        "date": "2026-07-03",
+        "count": 9
+      },
+      {
+        "date": "2026-07-04",
+        "count": 0
+      },
+      {
+        "date": "2026-07-05",
+        "count": 6
+      },
+      {
+        "date": "2026-07-06",
+        "count": 0
+      },
+      {
+        "date": "2026-07-07",
+        "count": 20
+      },
+      {
+        "date": "2026-07-08",
+        "count": 17
+      },
+      {
+        "date": "2026-07-09",
+        "count": 20
+      },
+      {
+        "date": "2026-07-10",
+        "count": 9
+      },
+      {
+        "date": "2026-07-11",
+        "count": 6
+      },
+      {
+        "date": "2026-07-12",
+        "count": 1
+      },
+      {
+        "date": "2026-07-13",
+        "count": 19
+      },
+      {
+        "date": "2026-07-14",
+        "count": 9
+      },
+      {
+        "date": "2026-07-15",
+        "count": 0
+      },
+      {
+        "date": "2026-07-16",
+        "count": 20
+      },
+      {
+        "date": "2026-07-17",
+        "count": 19
+      },
+      {
+        "date": "2026-07-18",
+        "count": 4
+      },
+      {
+        "date": "2026-07-19",
+        "count": 5
+      },
+      {
+        "date": "2026-07-20",
+        "count": 13
+      },
+      {
+        "date": "2026-07-21",
+        "count": 17
+      },
+      {
+        "date": "2026-07-22",
+        "count": 18
+      },
+      {
+        "date": "2026-07-23",
+        "count": 13
+      },
+      {
+        "date": "2026-07-24",
+        "count": 6
+      },
+      {
+        "date": "2026-07-25",
+        "count": 1
+      },
+      {
+        "date": "2026-07-26",
+        "count": 4
+      }
+    ]
+  }
+}

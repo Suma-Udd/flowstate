@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flowstate</title>
+
+<!--
+  The renderer is a GUI, not a client: it has no business reaching the network,
+  and the LLM call lives in main behind a hard timeout. default-src 'none' says
+  so, and connect-src 'none' means a stray fetch() in a screen fails loudly here
+  rather than quietly shipping something off the machine.
+
+  script-src carries 'unsafe-inline' for exactly one block: the theme bootstrap
+  below, which has to run before the stylesheets to keep the launch flash-free.
+  There is no build step to hash it against and no server to issue a nonce.
+  Everything else — every view, the shell, the library — is a file on disk.
+-->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+
+<!--
+  No theme flash on launch, ever. This runs before the stylesheets paint and
+  before <body> exists, so the very first frame is already the right theme.
+
+  The value is read synchronously from main, which owns the theme: it holds the
+  mode in config and resolves System to a concrete light or dark through
+  nativeTheme. Asking over an async channel would paint one frame first, and one
+  wrong frame is a visible bug that fails gate G2.
+-->
+<script>
+  (function () {
+    var html = document.documentElement;
+    try {
+      var theme = window.flow && window.flow.theme && window.flow.theme.initial();
+      if (!theme) return; // no bridge: tokens.css follows the OS, which is right
+      if (theme.resolved === 'light' || theme.resolved === 'dark') {
+        html.setAttribute('data-theme', theme.resolved);
+      }
+      if (theme.mode) html.setAttribute('data-theme-mode', theme.mode);
+    } catch (e) {
+      /* Never let the theme stop the app from starting. With no attribute at all
+         tokens.css falls back to prefers-color-scheme, so the worst case is the
+         OS theme rather than a broken window. */
+    }
+  })();
+</script>
+
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/app.css">
+<link rel="stylesheet" href="styles/screens.css">
+<link rel="stylesheet" href="styles/onboarding.css">
+</head>
+
+<body>
+<!--
+  The titlebar is last in the DOM and first on screen: .window places it in the
+  top grid row regardless of source order. Every interactive element in Flowstate
+  is Tab-reachable, and a tab cycle that opens on "Close" is a trap — this way
+  the window controls come after the screen, which is also where Windows puts
+  them in its own reading order.
+-->
+<div class="window">
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand" data-brand></div>
+      <nav class="nav" data-nav aria-label="Main"></nav>
+      <section class="status-card" data-status aria-live="polite"></section>
+      <nav class="sidebar-foot" data-nav-foot aria-label="Secondary"></nav>
+    </aside>
+
+    <main class="content" data-content></main>
+  </div>
+
+  <header class="titlebar">
+    <div class="titlebar-drag"></div>
+    <div class="titlebar-controls" data-window-controls></div>
+  </header>
+
+</div>
+
+<!-- "Flowstate X is out": filled in by app.js when the updater has news. -->
+<aside class="update-card" data-update-card aria-live="polite" hidden></aside>
+
+<script src="lib.js"></script>
+<script src="views/dictation.js"></script>
+<script src="views/history.js"></script>
+<script src="views/dictionary.js"></script>
+<script src="views/snippets.js"></script>
+<script src="views/scratchpad.js"></script>
+<script src="views/insights.js"></script>
+<script src="views/settings-general.js"></script>
+<script src="views/settings-system.js"></script>
+<script src="views/settings-about.js"></script>
+<script src="views/cleanup-provider.js"></script>
+<script src="views/onboarding.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

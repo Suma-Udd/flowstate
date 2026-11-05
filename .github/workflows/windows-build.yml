@@ -1,0 +1,124 @@
+name: windows-build
+
+# Run this by hand from the Actions tab.
+#
+#   Leave "version" empty  -> a test build. The installer is attached to the run
+#                             as an artifact. Nothing is published.
+#   Enter a version        -> a release. It sets the version, builds, tests the
+#                             installer on this machine, signs latest.json and
+#                             publishes the GitHub release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, like 0.1.0. Leave empty for a test build that publishes nothing.'
+        required: false
+        default: ''
+      notes:
+        description: "What's new: one to three plain sentences. Shown in the update popup."
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      VERSION: ${{ inputs.version }}
+      NOTES: ${{ inputs.notes }}
+      GH_TOKEN: ${{ github.token }}
+      FLOWSTATE_UPDATE_KEY: ${{ secrets.FLOWSTATE_UPDATE_KEY }}
+    steps:
+      - name: Check the inputs and the signing key
+        if: ${{ inputs.version != '' }}
+        shell: pwsh
+        run: |
+          if ($env:VERSION -notmatch '^\d+\.\d+\.\d+$') { throw "Version must look like 0.1.0, got '$env:VERSION'." }
+          if (-not $env:FLOWSTATE_UPDATE_KEY) {
+            throw 'The FLOWSTATE_UPDATE_KEY secret is not set. Add it under Settings > Secrets and variables > Actions, then run this again.'
+          }
+          if ($env:NOTES.Trim().Length -eq 0) { throw 'Write a few words in "notes": they appear in the update popup.' }
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Set the version
+        if: ${{ inputs.version != '' }}
+        shell: pwsh
+        run: |
+          if (git tag -l "v$env:VERSION") { throw "Tag v$env:VERSION already exists. Pick a newer version." }
+          node scripts/set-version.mjs $env:VERSION
+          git config user.name 'Sumayer'
+          git config user.email '192648348+Suma-Udd@users.noreply.github.com'
+          git add package.json package-lock.json
+          git commit -m "Release v$env:VERSION"
+          if ($LASTEXITCODE -ne 0) { throw 'Nothing to commit: is this version already set?' }
+
+      - run: npm ci
+      - run: npm test
+
+      - name: Build the installer
+        run: npm run dist
+
+      - name: Check the build needs nothing a clean Windows lacks
+        run: node scripts/check-native-imports.cjs release/win-unpacked
+
+      - name: Smoke test the installer
+        shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File scripts/windows-smoke.ps1 -Installer release/Flowstate-Setup.exe -Work "$env:RUNNER_TEMP\smoke"
+
+      - name: Keep the smoke test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-report
+          path: ${{ runner.temp }}\smoke\self-test.json
+          if-no-files-found: ignore
+
+      - name: Keep the installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: flowstate-windows-installer
+          path: release/Flowstate-Setup.exe
+          retention-days: 14
+
+      - name: Sign latest.json
+        if: ${{ inputs.version != '' }}
+        shell: pwsh
+        run: |
+          $url = "https://github.com/${{ github.repository }}/releases/download/v$env:VERSION/Flowstate-Setup.exe"
+          node scripts/make-latest-json.mjs --version $env:VERSION --installer release/Flowstate-Setup.exe --url $url --out release/latest.json
+
+      - name: Publish the release
+        if: ${{ inputs.version != '' }}
+        shell: pwsh
+        run: |
+          git push origin HEAD:main
+          $sha = git rev-parse HEAD
+          $body = @"
+          $($env:NOTES.Trim())
+
+          ## Install
+
+          1. Download **Flowstate-Setup.exe** below and run it.
+          2. Windows may say "Windows protected your PC", because the installer is not code-signed yet. Click **More info**, then **Run anyway**.
+          3. Follow the short setup. Hold **Ctrl + Win**, speak, let go.
+
+          Flowstate checks for updates by itself and asks before installing one.
+          "@
+          $body | Set-Content release/notes.md -Encoding utf8
+          gh release create "v$env:VERSION" release/Flowstate-Setup.exe release/latest.json --title "Flowstate $env:VERSION" --notes-file release/notes.md --target $sha --latest

@@ -1,0 +1,91 @@
+{
+  "name": "flowstate",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "test": "node --test",
+    "screenshots": "electron tools/screenshots.cjs",
+    "icon": "node tools/make-icon.mjs",
+    "set-version": "node scripts/set-version.mjs",
+    "dist": "electron-builder --win --x64 --publish never",
+    "dist:dir": "electron-builder --win dir --x64 --publish never",
+    "check:native": "node scripts/check-native-imports.cjs"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "4.2.0",
+    "electron": "^43.2.0",
+    "electron-builder": "26.15.3"
+  },
+  "dependencies": {
+    "better-sqlite3": "13.0.1",
+    "koffi": "3.1.2",
+    "sherpa-onnx-node": "1.13.4",
+    "sherpa-onnx-win-x64": "1.13.4",
+    "uiohook-napi": "1.5.5"
+  },
+  "author": "Sumayer",
+  "description": "Flowstate: free, local push-to-talk dictation for Windows.",
+  "build": {
+    "appId": "com.sumayer.flowstate",
+    "productName": "Flowstate",
+    "copyright": "Copyright (c) Sumayer. MIT License.",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "node_modules/**/*",
+      "!node_modules/**/{test,tests,docs,*.md,*.map,*.pdb}",
+      "!**/*.{ts,obj,lib,exp}",
+      "!node_modules/better-sqlite3/{deps,src}/**"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/sherpa-onnx-node/**",
+      "node_modules/sherpa-onnx-win-x64/**",
+      "node_modules/uiohook-napi/**",
+      "node_modules/koffi/**",
+      "node_modules/better-sqlite3/**"
+    ],
+    "npmRebuild": false,
+    "publish": null,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "Flowstate-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowElevation": false,
+      "allowToChangeInstallationDirectory": true,
+      "createStartMenuShortcut": true,
+      "createDesktopShortcut": "always",
+      "deleteAppDataOnUninstall": false,
+      "shortcutName": "Flowstate",
+      "include": "build/installer.nsh",
+      "runAfterFinish": true
+    }
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/Suma-Udd/flowstate#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Suma-Udd/flowstate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Suma-Udd/flowstate/issues"
+  }
+}

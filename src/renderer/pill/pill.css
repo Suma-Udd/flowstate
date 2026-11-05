@@ -1,0 +1,328 @@
+/* ==========================================================================
+   Flowstate — the recording pill (issue #11)
+
+   The most-seen surface in the app. It appears on every dictation, dozens of
+   times a day, while every other screen is visited occasionally.
+
+   Requires tokens.css and base.css, in that order. Nothing here may use a
+   literal colour, spacing value, radius or duration. Where the pill needs a
+   dimension the token scale does not carry — the 56px body height, the 3px
+   waveform bar — it is derived with calc() over tokens in --pill-* at the top
+   of the file, the same convention app.css uses.
+
+   Two things this file must never do:
+
+     - animate anything but transform and opacity. The pill is composited over
+       whatever the user is actually looking at; a layout during dictation is
+       jank in their peripheral vision.
+     - run an animation while the window is hidden. `data-anim="off"` on the
+       stage kills every keyframe animation outright, alongside pill.js
+       cancelling its rAF loop. Gate G4 is a 10-minute idle flatline.
+   ========================================================================== */
+
+.pill-stage {
+  /* Geometry. The pill is "roughly 220x56" per the design notes; these calcs land
+     on 224x56 and stay on the spacing scale.
+
+     --pill-lift is the entry/exit travel, and --pill-inset is the gap between
+     the pill and the bottom of its window. windows.js positions the window so
+     that this inset puts the pill exactly 80px above the taskbar, so the two
+     values have to agree — tests/pill.test.js asserts they do. */
+  --pill-w: calc(var(--sp-16) * 3 + var(--sp-8));
+  --pill-h: calc(var(--sp-16) - var(--sp-2));
+  --pill-inset: var(--sp-4);
+  --pill-lift: var(--sp-3);
+
+  --pill-bar-w: calc(var(--sp-1) * .75);
+  --pill-bar-gap: calc(var(--sp-1) * .5);
+  --pill-wave-h: var(--sp-6);
+  --pill-dot: var(--sp-2);
+  --pill-glyph: var(--sp-5);
+
+  /* Looping motion is slower than any UI transition, so it is derived from
+     --dur-slow rather than hardcoded. Reduced motion collapses --dur-slow to
+     1ms in tokens.css, which stills both of these. */
+  --pill-pulse-dur: calc(var(--dur-slow) * 6);
+  --pill-shimmer-dur: calc(var(--dur-slow) * 4);
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 var(--sp-4) var(--pill-inset);
+  pointer-events: none; /* belt and braces: the window is click-through too */
+}
+
+/* The pill window is transparent — it floats over the user's document. This
+   class goes on <body> so it wins over base.css's --bg canvas without that
+   rule needing to know the pill exists. */
+.pill-root {
+  position: relative;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   The pill body
+   -------------------------------------------------------------------------- */
+
+.pill {
+  position: relative;
+  isolation: isolate; /* keeps the --pill-bg layer behind the content only */
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: var(--pill-w);
+  max-width: 100%;
+  height: var(--pill-h);
+  padding: 0 var(--sp-5);
+  border: var(--border-w) solid var(--border-strong);
+  border-radius: var(--r-full);
+
+  /* Entry and exit: 180ms on --ease, transform and opacity only. The stage
+     starts hidden so a freshly shown window animates in rather than snapping. */
+  transform: translateY(var(--pill-lift)) scale(.96);
+  opacity: 0;
+  transition: transform var(--dur-base) var(--ease),
+              opacity var(--dur-base) var(--ease);
+}
+
+.pill-stage[data-visible='true'] .pill {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* --surface at 96%, as its own layer so the text on top stays fully opaque.
+   the design notes asks for 96% and forbids colour-mix elsewhere in the app, so
+   the opacity lives on a layer rather than in the colour. */
+.pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--surface);
+  opacity: .96;
+}
+
+/* State wash. This is what makes `pasting` and `error` readable in peripheral
+   vision without reading a word: the whole pill takes a tint. */
+.pill-tint {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: var(--accent);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease),
+              background-color var(--dur-base) var(--ease);
+}
+
+/* --------------------------------------------------------------------------
+   Leading glyph — one 20px slot, one glyph visible at a time
+   -------------------------------------------------------------------------- */
+
+.pill-glyph {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--pill-glyph);
+  height: var(--pill-glyph);
+}
+
+.pill-dot {
+  width: var(--pill-dot);
+  height: var(--pill-dot);
+  border-radius: var(--r-full);
+  background-color: var(--text-faint);
+  transition: background-color var(--dur-base) var(--ease);
+}
+
+.pill-icon {
+  width: var(--pill-glyph);
+  height: var(--pill-glyph);
+}
+
+/* Every glyph and every body variant is hidden until a state selects it below.
+   Toggling display is a state change, not an animation, so nothing here is
+   transitioned — and nothing off-state is left in the layout. */
+.pill [data-glyph],
+.pill [data-body] {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Body — waveform, shimmer, or a line of text
+   -------------------------------------------------------------------------- */
+
+.pill-body {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pill-text {
+  font: var(--t-label);
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--dur-base) var(--ease);
+}
+
+/* Waveform. 28 bars, each a fixed-height element scaled on transform — never
+   height — so a 60fps loop never lays out a frame. pill.js writes --a. */
+.pill-wave {
+  align-items: center;
+  justify-content: center;
+  gap: var(--pill-bar-gap);
+  width: 100%;
+  height: var(--pill-wave-h);
+  color: var(--accent);
+}
+
+.pill-bar {
+  flex: none;
+  width: var(--pill-bar-w);
+  height: 100%;
+  border-radius: var(--r-full);
+  background: currentColor;
+  transform: scaleY(var(--a, .06));
+  transform-origin: center;
+}
+
+/* Indeterminate shimmer for `thinking`: a band crossing an accent-soft track,
+   translateX only. */
+.pill-shimmer {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: calc(var(--sp-1) * 1.5);
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+}
+
+.pill-shimmer-band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  border-radius: inherit;
+  background: var(--accent);
+  /* ease-in-out rather than --ease: --ease decelerates hard at the end, which
+     on a loop parks the band at the right edge for most of the cycle. An
+     indeterminate indicator that is stationary most of the time is not
+     indicating anything. */
+  animation: pill-shimmer var(--pill-shimmer-dur) ease-in-out infinite;
+}
+
+/* The band is 40% of the track, so translateX is 2.5x the track in its own
+   units: -100% is flush off the left edge and 250% flush off the right. Going
+   further would leave the track empty for part of every cycle. */
+@keyframes pill-shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(250%); }
+}
+
+@keyframes pill-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.35); opacity: .55; }
+}
+
+/* --------------------------------------------------------------------------
+   The five states
+
+   Each is meant to be identifiable in peripheral vision without reading:
+   shape, colour and motion carry the meaning, and the text is a confirmation
+   for when the user does look.
+   -------------------------------------------------------------------------- */
+
+/* idle-armed — hotkey held, capture starting. Still, faint, quiet. */
+.pill[data-state='idle-armed'] [data-glyph='dot'],
+.pill[data-state='idle-armed'] [data-body='text'] {
+  display: block;
+}
+
+/* listening — live waveform in --accent with the red signal dot pulsing:
+   the same red as the brand mark, the one colour that means "live". */
+.pill[data-state='listening'] [data-glyph='dot'] {
+  display: block;
+  background-color: var(--signal);
+  animation: pill-pulse var(--pill-pulse-dur) var(--ease) infinite;
+}
+
+.pill[data-state='listening'] [data-body='wave'] {
+  display: flex;
+}
+
+/* thinking — ASR and cleanup running. The dot holds steady so the shimmer is
+   the only thing moving. */
+.pill[data-state='thinking'] [data-glyph='dot'] {
+  display: block;
+  background-color: var(--accent);
+}
+
+.pill[data-state='thinking'] [data-body='shimmer'] {
+  display: block;
+}
+
+/* pasting — text delivered. A --success check and a wash of the same colour. */
+.pill[data-state='pasting'] [data-glyph='check'],
+.pill[data-state='pasting'] [data-body='text'] {
+  display: block;
+}
+
+.pill[data-state='pasting'] {
+  color: var(--success);
+}
+
+.pill[data-state='pasting'] .pill-tint {
+  background-color: var(--success);
+  opacity: .12;
+}
+
+.pill[data-state='pasting'] .pill-text {
+  color: var(--success);
+}
+
+/* error — always says what failed. The reason is --text, not --danger: it has
+   to be readable, and the wash and the glyph already carry the alarm. */
+.pill[data-state='error'] [data-glyph='alert'],
+.pill[data-state='error'] [data-body='text'] {
+  display: block;
+}
+
+.pill[data-state='error'] {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.pill[data-state='error'] .pill-tint {
+  background-color: var(--danger);
+  opacity: .1;
+}
+
+.pill[data-state='error'] .pill-text {
+  color: var(--text);
+}
+
+/* --------------------------------------------------------------------------
+   Hidden window == zero animation
+
+   pill.js sets this the moment the document goes hidden, before Chromium's own
+   throttling is relied on. Paired with the cancelled rAF loop it is the whole
+   of the pill's idle cost: nothing.
+   -------------------------------------------------------------------------- */
+
+.pill-stage[data-anim='off'] .pill,
+.pill-stage[data-anim='off'] .pill *,
+.pill-stage[data-anim='off'] .pill *::before,
+.pill-stage[data-anim='off'] .pill *::after {
+  animation: none;
+  transition: none;
+}

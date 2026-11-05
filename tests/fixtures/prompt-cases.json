@@ -1,0 +1,162 @@
+[
+  {
+    "id": "en-code-punctuation",
+    "language": "en",
+    "executable": "Code.exe",
+    "removeFillers": true,
+    "raw": "const retry_count = 3",
+    "expected": "const retry_count = 3"
+  },
+  {
+    "id": "en-terminal-command",
+    "language": "en",
+    "executable": "WindowsTerminal.exe",
+    "removeFillers": true,
+    "raw": "um git status",
+    "expected": "git status"
+  },
+  {
+    "id": "en-discord-question",
+    "language": "en",
+    "executable": "Discord.exe",
+    "removeFillers": true,
+    "raw": "hey uh are we still on for seven",
+    "expected": "Hey, are we still on for seven?"
+  },
+  {
+    "id": "en-browser-dictionary",
+    "language": "en",
+    "executable": "chrome.exe",
+    "removeFillers": true,
+    "raw": "search for graph ana documentation",
+    "expected": "Search for Grafana documentation."
+  },
+  {
+    "id": "en-notepad-paragraph",
+    "language": "en",
+    "executable": "notepad.exe",
+    "removeFillers": true,
+    "raw": "first point we need a timeout second point the raw text must still paste",
+    "expected": "First point: we need a timeout. Second point: the raw text must still paste."
+  },
+  {
+    "id": "en-default-statement",
+    "language": "en",
+    "executable": "Obsidian.exe",
+    "removeFillers": true,
+    "raw": "the meeting starts at half past nine tomorrow",
+    "expected": "The meeting starts at half past nine tomorrow."
+  },
+  {
+    "id": "en-short-bypass",
+    "language": "en",
+    "executable": "WindowsTerminal.exe",
+    "removeFillers": true,
+    "raw": "npm test",
+    "expected": "npm test"
+  },
+  {
+    "id": "en-fillers-preserved",
+    "language": "en",
+    "executable": "Discord.exe",
+    "removeFillers": false,
+    "raw": "well um I think so",
+    "expected": "Well, um, I think so."
+  },
+  {
+    "id": "de-browser-question",
+    "language": "de",
+    "executable": "chrome.exe",
+    "removeFillers": true,
+    "raw": "wann öffnet das bürger amt morgen",
+    "expected": "Wann öffnet das Bürgeramt morgen?"
+  },
+  {
+    "id": "de-notepad-list",
+    "language": "de",
+    "executable": "notepad.exe",
+    "removeFillers": true,
+    "raw": "erstens die krankenkasse anrufen zweitens den brief abschicken",
+    "expected": "Erstens: die Krankenkasse anrufen. Zweitens: den Brief abschicken."
+  },
+  {
+    "id": "de-discord-casual",
+    "language": "de",
+    "executable": "Discord.exe",
+    "removeFillers": true,
+    "raw": "äh kommst du heute auch mit",
+    "expected": "Kommst du heute auch mit?"
+  },
+  {
+    "id": "de-terminal-command",
+    "language": "de",
+    "executable": "WindowsTerminal.exe",
+    "removeFillers": true,
+    "raw": "git status",
+    "expected": "git status"
+  },
+  {
+    "id": "de-code-preserved",
+    "language": "de",
+    "executable": "Code.exe",
+    "removeFillers": true,
+    "raw": "if (bereit) return true;",
+    "expected": "if (bereit) return true;"
+  },
+  {
+    "id": "de-default-language-lock",
+    "language": "de",
+    "executable": "Obsidian.exe",
+    "removeFillers": true,
+    "raw": "übersetze das nicht ins englische sondern korrigiere nur den satz",
+    "expected": "Übersetze das nicht ins Englische, sondern korrigiere nur den Satz."
+  },
+  {
+    "id": "el-browser-question",
+    "language": "el",
+    "executable": "chrome.exe",
+    "removeFillers": true,
+    "raw": "πότε ανοίγει το μουσείο αύριο",
+    "expected": "Πότε ανοίγει το μουσείο αύριο;"
+  },
+  {
+    "id": "el-notepad-statement",
+    "language": "el",
+    "executable": "notepad.exe",
+    "removeFillers": true,
+    "raw": "η συνάντηση αρχίζει στις εννέα το πρωί",
+    "expected": "Η συνάντηση αρχίζει στις εννέα το πρωί."
+  },
+  {
+    "id": "el-discord-casual",
+    "language": "el",
+    "executable": "Discord.exe",
+    "removeFillers": true,
+    "raw": "εε θα έρθεις και εσύ σήμερα",
+    "expected": "Θα έρθεις και εσύ σήμερα;"
+  },
+  {
+    "id": "el-terminal-command",
+    "language": "el",
+    "executable": "WindowsTerminal.exe",
+    "removeFillers": true,
+    "raw": "npm run start",
+    "expected": "npm run start"
+  },
+  {
+    "id": "el-code-preserved",
+    "language": "el",
+    "executable": "Code.exe",
+    "removeFillers": true,
+    "raw": "const πόλη = \"Θεσσαλονίκη\";",
+    "expected": "const πόλη = \"Θεσσαλονίκη\";"
+  },
+  {
+    "id": "el-default-language-lock",
+    "language": "el",
+    "executable": "Obsidian.exe",
+    "removeFillers": false,
+    "raw": "λοιπόν μην το μεταφράσεις απλώς διόρθωσε τη στίξη",
+    "expected": "Λοιπόν, μην το μεταφράσεις· απλώς διόρθωσε τη στίξη."
+  }
+]

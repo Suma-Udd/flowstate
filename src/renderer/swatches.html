@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flowstate — design tokens</title>
+
+<!--
+  No theme flash on launch, ever. This runs before the stylesheets paint and
+  before <body> exists, so the first frame is already the right theme.
+  Every screen in this app gets this same block.
+-->
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('flowstate.theme');
+      if (saved === 'light' || saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', saved);
+      }
+      // No attribute at all == System mode; tokens.css follows the OS.
+    } catch (e) { /* private mode, first run — System is a fine default */ }
+  })();
+</script>
+
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+
+<style>
+  /* Page chrome for this review artifact. Tokens only — no literals. */
+
+  .page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--sp-8);
+  }
+
+  .page-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-4);
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: var(--sp-3);
+  }
+
+  .page-title { font: var(--t-title); }
+
+  .page-sub {
+    font: var(--t-body);
+    color: var(--text-dim);
+    max-width: 68ch;
+    margin-bottom: var(--sp-8);
+  }
+
+  /* Theme switch — also the no-flash demo. */
+  .switch {
+    display: flex;
+    gap: var(--sp-1);
+    padding: var(--sp-1);
+    background: var(--surface-alt);
+    border: var(--border-w) solid var(--border);
+    border-radius: var(--r-full);
+  }
+
+  .switch button {
+    padding: var(--sp-2) var(--sp-4);
+    border-radius: var(--r-full);
+    font: var(--t-label);
+    color: var(--text-dim);
+    transition: color var(--dur-fast) var(--ease),
+                opacity var(--dur-fast) var(--ease);
+  }
+
+  .switch button:hover { color: var(--text); }
+
+  .switch button[aria-pressed='true'] {
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+
+  /* Two panels, one per theme, side by side. Each panel pins its own
+     data-theme, so both palettes render live on the same page. */
+  .panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: var(--sp-6);
+  }
+
+  .panel {
+    background: var(--bg);
+    color: var(--text);
+    border: var(--border-w) solid var(--border-strong);
+    border-radius: var(--r-lg);
+    padding: var(--sp-6);
+  }
+
+  .panel-name {
+    font: var(--t-micro);
+    letter-spacing: var(--t-micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: var(--sp-5);
+  }
+
+  .group + .group { margin-top: var(--sp-8); }
+
+  .group-title {
+    font: var(--t-heading);
+    margin-bottom: var(--sp-4);
+    padding-bottom: var(--sp-2);
+    border-bottom: var(--border-w) solid var(--border);
+  }
+
+  /* --- colour swatches --- */
+
+  .swatch {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: var(--sp-2) 0;
+  }
+
+  .swatch + .swatch { border-top: var(--border-w) solid var(--border); }
+
+  .chip {
+    flex: none;
+    width: var(--sp-12);
+    height: var(--sp-12);
+    border-radius: var(--r-md);
+    border: var(--border-w) solid var(--border-strong);
+  }
+
+  .swatch-meta { min-width: 0; }
+
+  .swatch-name {
+    font-family: var(--font-mono);
+    font-size: var(--t-caption-size);
+    color: var(--text);
+  }
+
+  .swatch-value {
+    font-family: var(--font-mono);
+    font-size: var(--t-caption-size);
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+
+  .swatch-use {
+    font: var(--t-caption);
+    color: var(--text-dim);
+  }
+
+  /* --- data ramp --- */
+
+  .ramp {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--sp-2);
+  }
+
+  .ramp-step {
+    height: var(--sp-16);
+    border-radius: var(--r-sm);
+    border: var(--border-w) solid var(--border);
+  }
+
+  .ramp-label {
+    font-family: var(--font-mono);
+    font-size: var(--t-caption-size);
+    color: var(--text-dim);
+    margin-top: var(--sp-2);
+    text-align: center;
+  }
+
+  /* --- type --- */
+
+  .type-row { padding: var(--sp-3) 0; }
+  .type-row + .type-row { border-top: var(--border-w) solid var(--border); }
+
+  .type-sample { color: var(--text); }
+
+  .type-meta {
+    font-family: var(--font-mono);
+    font-size: var(--t-caption-size);
+    color: var(--text-dim);
+    margin-top: var(--sp-1);
+  }
+
+  .is-micro {
+    letter-spacing: var(--t-micro-tracking);
+    text-transform: uppercase;
+  }
+
+  /* --- spacing / radii / motion / z --- */
+
+  .scale-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: var(--sp-2) 0;
+  }
+
+  .scale-row + .scale-row { border-top: var(--border-w) solid var(--border); }
+
+  .scale-key {
+    flex: none;
+    width: 12ch; /* fits the longest key (--border-w, --dur-fast) on one line */
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: var(--t-caption-size);
+    color: var(--text);
+  }
+
+  .scale-val {
+    flex: none;
+    width: 7ch;
+    font-family: var(--font-mono);
+    font-size: var(--t-caption-size);
+    color: var(--text-dim);
+  }
+
+  .scale-bar {
+    height: var(--sp-5);
+    background: var(--accent);
+    border-radius: var(--r-sm);
+  }
+
+  .radius-box {
+    width: var(--sp-16);
+    height: var(--sp-12);
+    background: var(--accent-soft);
+    border: var(--border-w) solid var(--accent);
+  }
+
+  /* Motion demo — transform and opacity only, never width or left. */
+  .motion-track {
+    flex: 1;
+    height: var(--sp-8);
+    background: var(--surface-alt);
+    border-radius: var(--r-full);
+    border: var(--border-w) solid var(--border);
+    overflow: hidden;
+  }
+
+  .motion-dot {
+    width: var(--sp-8);
+    height: var(--sp-8);
+    border-radius: var(--r-full);
+    background: var(--accent);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .motion-track.is-out .motion-dot {
+    transform: translateX(calc(100% * 3));
+  }
+
+  .z-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    padding: var(--sp-2) 0;
+    font-family: var(--font-mono);
+    font-size: var(--t-caption-size);
+  }
+
+  .z-row + .z-row { border-top: var(--border-w) solid var(--border); }
+  .z-use { color: var(--text-dim); font-family: var(--font-ui); }
+
+  /* --- contrast table --- */
+
+  .contrast { width: 100%; }
+
+  .contrast th {
+    text-align: left;
+    font: var(--t-micro);
+    letter-spacing: var(--t-micro-tracking);
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: var(--sp-2);
+    border-bottom: var(--border-w) solid var(--border-strong);
+  }
+
+  .contrast td {
+    padding: var(--sp-2);
+    font: var(--t-caption);
+    border-bottom: var(--border-w) solid var(--border);
+    vertical-align: middle;
+  }
+
+  .contrast .num {
+    font-family: var(--font-mono);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .verdict {
+    display: inline-block;
+    padding: 0 var(--sp-2);
+    border-radius: var(--r-full);
+    font: var(--t-micro);
+    letter-spacing: var(--t-micro-tracking);
+    text-transform: uppercase;
+  }
+
+  .verdict.pass { background: var(--accent-soft); color: var(--accent); }
+  .verdict.fail { background: var(--danger-soft); color: var(--danger); }
+  .verdict.exempt { background: var(--surface-hover); color: var(--text-dim); }
+
+  .sample {
+    display: inline-block;
+    padding: var(--sp-1) var(--sp-2);
+    border-radius: var(--r-sm);
+    white-space: nowrap;
+  }
+
+  /* --- notes --- */
+
+  .notes {
+    margin-top: var(--sp-12);
+    background: var(--surface);
+    border: var(--border-w) solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--sp-6);
+  }
+
+  .notes h2 { font: var(--t-heading); margin-bottom: var(--sp-4); }
+  .notes li { margin-bottom: var(--sp-4); max-width: 90ch; }
+  .notes li:last-child { margin-bottom: 0; }
+  .notes code { color: var(--accent); }
+
+  @media (max-width: 900px) {
+    .page { padding: var(--sp-4); }
+  }
+</style>
+</head>
+
+<body>
+<div class="page">
+
+  <header class="page-head">
+    <div>
+      <h1 class="page-title">Flowstate — design tokens</h1>
+    </div>
+    <div class="switch" role="group" aria-label="Page theme">
+      <button type="button" data-set-theme="light">Light</button>
+      <button type="button" data-set-theme="dark">Dark</button>
+      <button type="button" data-set-theme="system">System</button>
+    </div>
+  </header>
+
+  <p class="page-sub">
+    Every token in <code>tokens.css</code>, rendered in both themes side by side.
+    Values are read live with <code>getComputedStyle</code>, so what you see is
+    what the stylesheet actually resolves — nothing here is transcribed by hand.
+    The switch above re-themes this page's own chrome and demonstrates the
+    no-flash path; the two panels below always show both themes at once.
+  </p>
+
+  <div class="panels" id="panels"></div>
+
+  <section class="notes">
+    <h2>Verified deviations from the design notes</h2>
+    <ol>
+      <li>
+        <strong><code>--accent-soft</code> (dark) is <code>#1A3330</code>, not
+        <code>#1E3A37</code>.</strong> Active nav is <code>--accent</code> text on
+        <code>--accent-soft</code>. At the spec value that pair measured
+        <strong>4.19:1</strong>, under the 4.5:1 AA floor for 13px
+        <code>--t-label</code> nav items. The new value measures
+        <strong>4.60:1</strong> and is visually near-identical.
+      </li>
+      <li>
+        <strong><code>--text-dim</code> (light) is <code>#68655F</code>, not
+        <code>#6B6862</code>.</strong> Dim metadata inside a hovered row is
+        <code>--text-dim</code> on <code>--surface-hover</code>, the darkest light
+        surface. At the spec value that pair measured <strong>4.45:1</strong> — 0.05
+        under the floor, and invisible to the eye, which is exactly why the spec
+        says check rather than eyeball. The new value measures
+        <strong>4.66:1</strong> there and lifts every other
+        <code>--text-dim</code> pair with it.
+      </li>
+      <li>
+        <strong><code>--text-faint</code> is disabled-only.</strong> The spec lists it
+        for “placeholders, disabled”, but it measures 2.95:1 (light) and 3.17:1
+        (dark) on <code>--surface</code>. Disabled controls are exempt from WCAG
+        1.4.3; placeholder text is not. <code>base.css</code> therefore renders
+        <code>::placeholder</code> in <code>--text-dim</code>. Raising
+        <code>--text-faint</code> to pass would collapse it into
+        <code>--text-dim</code> and destroy the three-tier text hierarchy.
+      </li>
+      <li>
+        <strong><code>--border-strong</code> is a decorative hairline, not a
+        component boundary.</strong> It measures ~1.6:1 and does not meet WCAG
+        1.4.11’s 3:1. Inputs are identified by their <code>--surface-alt</code> fill
+        and their label rather than by the hairline alone, and the focus indicator
+        carries the non-text contrast obligation at 7.95:1 (light) / 5.84:1 (dark).
+        Darkening the hairline to 3:1 reads as a heavy box and breaks the papery
+        aesthetic that is the whole point of the palette.
+      </li>
+      <li>
+        <strong>Data ramp steps sit 1.4–1.8:1 apart.</strong> That is inherent to a
+        four-step sequential ramp and is not a WCAG failure — adjacent steps are
+        fills, not text on each other. <code>--ramp-3</code> and
+        <code>--ramp-4</code> both clear 3:1 against <code>--surface</code>, so a
+        single bar is always distinguishable from its background.
+      </li>
+    </ol>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------------------------------------------------------------------
+     Token manifest. Names and intended use only — never values. Values are
+     read from the live stylesheet so this page cannot drift from tokens.css.
+     --------------------------------------------------------------------- */
+
+  var COLOR_GROUPS = [
+    ['Surfaces', [
+      ['--bg', 'App canvas, sidebar'],
+      ['--surface', 'Cards, content panel'],
+      ['--surface-alt', 'Inset areas, table stripes, inputs'],
+      ['--surface-hover', 'Row and button hover']
+    ]],
+    ['Borders', [
+      ['--border', 'Hairlines, card edges'],
+      ['--border-strong', 'Input borders, dividers that must read']
+    ]],
+    ['Text', [
+      ['--text', 'Primary text'],
+      ['--text-dim', 'Labels, captions, metadata, placeholders'],
+      ['--text-faint', 'Disabled only']
+    ]],
+    ['Accent', [
+      ['--accent', 'Primary action, gauges, active nav'],
+      ['--accent-hover', 'Accent hover'],
+      ['--accent-soft', 'Accent-tinted fills, selected rows'],
+      ['--accent-text', 'Text on accent']
+    ]],
+    ['Status', [
+      ['--danger', 'Destructive actions, errors'],
+      ['--danger-soft', 'Error backgrounds'],
+      ['--warn', 'Warnings'],
+      ['--success', 'Confirmations']
+    ]]
+  ];
+
+  var RAMP = ['--ramp-1', '--ramp-2', '--ramp-3', '--ramp-4'];
+
+  var TYPE = [
+    ['--t-display', '303', 'Big stat numbers'],
+    ['--t-title', 'Insights', 'Page titles'],
+    ['--t-heading', 'App usage', 'Card headings'],
+    ['--t-body', 'Hold the hotkey, speak, release.', 'Default'],
+    ['--t-label', 'Microphone', 'Form labels, nav'],
+    ['--t-caption', 'Updated 2 minutes ago', 'Metadata'],
+    ['--t-micro', 'Words per minute', 'Stat card captions']
+  ];
+
+  var SPACING = ['--sp-1', '--sp-2', '--sp-3', '--sp-4', '--sp-5',
+                 '--sp-6', '--sp-8', '--sp-10', '--sp-12', '--sp-16'];
+
+  var RADII = [
+    ['--r-sm', 'Inputs, chips'],
+    ['--r-md', 'Buttons'],
+    ['--r-lg', 'Cards'],
+    ['--r-full', 'Pills, badges, the recording pill']
+  ];
+
+  var MOTION = [
+    ['--dur-fast', 'Hover, focus'],
+    ['--dur-base', 'Pill entry/exit, panel transitions'],
+    ['--dur-slow', 'Route changes']
+  ];
+
+  var ZLAYERS = [
+    ['--z-base', 'Document flow'],
+    ['--z-raised', 'Hover lift, sticky table headers'],
+    ['--z-sticky', 'Sidebar, tab strip'],
+    ['--z-dropdown', 'Menus, comboboxes'],
+    ['--z-scrim', 'Dialog backdrop'],
+    ['--z-modal', 'Dialogs, confirmations'],
+    ['--z-toast', 'Transient notifications'],
+    ['--z-pill', 'Recording pill overlay']
+  ];
+
+  /* [ label, foreground, background, required ratio ]
+     3.0 = WCAG 1.4.11 non-text / large text. 4.5 = WCAG 1.4.3 body text.
+     null = exempt, shown for completeness with the reason. */
+  var PAIRS = [
+    ['Primary text on canvas', '--text', '--bg', 4.5],
+    ['Primary text on card', '--text', '--surface', 4.5],
+    ['Primary text on inset', '--text', '--surface-alt', 4.5],
+    ['Primary text on hover', '--text', '--surface-hover', 4.5],
+    ['Dim text on canvas', '--text-dim', '--bg', 4.5],
+    ['Dim text on card', '--text-dim', '--surface', 4.5],
+    ['Dim text on inset', '--text-dim', '--surface-alt', 4.5],
+    ['Placeholder on inset (uses --text-dim)', '--text-dim', '--surface-alt', 4.5],
+    ['Accent text on canvas', '--accent', '--bg', 4.5],
+    ['Accent text on card', '--accent', '--surface', 4.5],
+    ['Active nav: accent on accent-soft', '--accent', '--accent-soft', 4.5],
+    ['Button label on accent', '--accent-text', '--accent', 4.5],
+    ['Button label on accent-hover', '--accent-text', '--accent-hover', 4.5],
+    ['Danger on card', '--danger', '--surface', 4.5],
+    ['Danger on danger-soft', '--danger', '--danger-soft', 4.5],
+    ['Warn on card', '--warn', '--surface', 4.5],
+    ['Success on card', '--success', '--surface', 4.5],
+    ['Focus ring on card', '--accent', '--surface', 3.0],
+    ['Focus ring on canvas', '--accent', '--bg', 3.0],
+    ['ramp-4 bar on card', '--ramp-4', '--surface', 3.0],
+    ['ramp-3 bar on card', '--ramp-3', '--surface', 3.0],
+    ['Disabled text on card', '--text-faint', '--surface', null],
+    ['Hairline on card', '--border-strong', '--surface', null]
+  ];
+
+  var EXEMPT_REASON = {
+    '--text-faint': 'Disabled — exempt, WCAG 1.4.3',
+    '--border-strong': 'Decorative hairline — see note 3'
+  };
+
+  /* ---------------------------------------------------------------------
+     Colour maths — WCAG 2.1 relative luminance and contrast ratio.
+     --------------------------------------------------------------------- */
+
+  function parseColor(str) {
+    // Computed custom properties come back as authored (#RRGGBB here), so
+    // resolve through the canvas for anything that is not plain hex.
+    var s = String(str).trim();
+    var m = /^#([0-9a-f]{6})$/i.exec(s);
+    if (m) {
+      var n = parseInt(m[1], 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    m = /rgba?\(([^)]+)\)/i.exec(s);
+    if (m) {
+      var p = m[1].split(/[,\s/]+/).filter(Boolean).map(Number);
+      return [p[0], p[1], p[2]];
+    }
+    return [0, 0, 0];
+  }
+
+  function luminance(rgb) {
+    var a = rgb.map(function (v) {
+      var c = v / 255;
+      return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+  }
+
+  function contrast(fg, bg) {
+    var l1 = luminance(parseColor(fg));
+    var l2 = luminance(parseColor(bg));
+    var hi = Math.max(l1, l2);
+    var lo = Math.min(l1, l2);
+    return (hi + 0.05) / (lo + 0.05);
+  }
+
+  /* ---------------------------------------------------------------------
+     Rendering
+     --------------------------------------------------------------------- */
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function group(title) {
+    var g = el('section', 'group');
+    g.appendChild(el('h2', 'group-title', title));
+    return g;
+  }
+
+  // Reads a token's resolved value in the context of a given element.
+  function tokenValue(scope, name) {
+    return getComputedStyle(scope).getPropertyValue(name).trim();
+  }
+
+  function buildColorGroups(panel) {
+    COLOR_GROUPS.forEach(function (entry) {
+      var g = group(entry[0]);
+      entry[1].forEach(function (t) {
+        var name = t[0], use = t[1];
+        var row = el('div', 'swatch');
+        var chip = el('div', 'chip');
+        chip.style.background = 'var(' + name + ')';
+        var meta = el('div', 'swatch-meta');
+        meta.appendChild(el('div', 'swatch-name', name));
+        meta.appendChild(el('div', 'swatch-value', tokenValue(panel, name)));
+        meta.appendChild(el('div', 'swatch-use', use));
+        row.appendChild(chip);
+        row.appendChild(meta);
+        g.appendChild(row);
+      });
+      panel.appendChild(g);
+    });
+  }
+
+  function buildRamp(panel) {
+    var g = group('Data ramp');
+    var strip = el('div', 'ramp');
+    RAMP.forEach(function (name) {
+      var cell = el('div');
+      var box = el('div', 'ramp-step');
+      box.style.background = 'var(' + name + ')';
+      cell.appendChild(box);
+      cell.appendChild(el('div', 'ramp-label', name.replace('--ramp-', '')));
+      cell.appendChild(el('div', 'ramp-label', tokenValue(panel, name).toUpperCase()));
+      strip.appendChild(cell);
+    });
+    g.appendChild(strip);
+    var note = el('p', 'swatch-use',
+      'The dark ramp is not the light ramp dimmed — it ramps toward brightness, '
+      + 'because dark backgrounds read intensity as light rather than as depth.');
+    note.style.marginTop = 'var(--sp-3)';
+    g.appendChild(note);
+    panel.appendChild(g);
+  }
+
+  function buildType(panel) {
+    var g = group('Type');
+    TYPE.forEach(function (t) {
+      var name = t[0], sample = t[1], use = t[2];
+      var row = el('div', 'type-row');
+      var s = el('div', 'type-sample' + (name === '--t-micro' ? ' is-micro' : ''), sample);
+      s.style.font = 'var(' + name + ')';
+      var size = tokenValue(panel, name + '-size');
+      var weight = tokenValue(panel, name + '-weight');
+      var lh = tokenValue(panel, name + '-lh');
+      var meta = name + '  ·  ' + size + ' / ' + lh + '  ·  weight ' + weight
+        + (name === '--t-micro'
+            ? '  ·  tracking ' + tokenValue(panel, '--t-micro-tracking') + ', uppercase'
+            : '')
+        + '  ·  ' + use;
+      row.appendChild(s);
+      row.appendChild(el('div', 'type-meta', meta));
+      g.appendChild(row);
+    });
+    panel.appendChild(g);
+  }
+
+  function buildSpacing(panel) {
+    var g = group('Spacing');
+    SPACING.forEach(function (name) {
+      var row = el('div', 'scale-row');
+      row.appendChild(el('div', 'scale-key', name));
+      row.appendChild(el('div', 'scale-val', tokenValue(panel, name)));
+      var bar = el('div', 'scale-bar');
+      bar.style.width = 'var(' + name + ')';
+      row.appendChild(bar);
+      g.appendChild(row);
+    });
+    panel.appendChild(g);
+  }
+
+  function buildRadii(panel) {
+    var g = group('Radii');
+    RADII.forEach(function (t) {
+      var row = el('div', 'scale-row');
+      row.appendChild(el('div', 'scale-key', t[0]));
+      row.appendChild(el('div', 'scale-val', tokenValue(panel, t[0])));
+      var box = el('div', 'radius-box');
+      box.style.borderRadius = 'var(' + t[0] + ')';
+      row.appendChild(box);
+      row.appendChild(el('div', 'swatch-use', t[1]));
+      g.appendChild(row);
+    });
+
+    var row = el('div', 'scale-row');
+    row.appendChild(el('div', 'scale-key', '--border-w'));
+    row.appendChild(el('div', 'scale-val', tokenValue(panel, '--border-w')));
+    row.appendChild(el('div', 'swatch-use',
+      'Hairline width. There is no shadow token — elevation is --surface against --bg.'));
+    g.appendChild(row);
+
+    panel.appendChild(g);
+  }
+
+  function buildMotion(panel) {
+    var g = group('Motion');
+
+    var ease = el('div', 'scale-row');
+    ease.appendChild(el('div', 'scale-key', '--ease'));
+    ease.appendChild(el('div', 'swatch-value', tokenValue(panel, '--ease')));
+    g.appendChild(ease);
+
+    MOTION.forEach(function (t) {
+      var row = el('div', 'scale-row');
+      row.appendChild(el('div', 'scale-key', t[0]));
+      row.appendChild(el('div', 'scale-val', tokenValue(panel, t[0])));
+
+      var track = el('div', 'motion-track');
+      track.style.setProperty('--dur', 'var(' + t[0] + ')');
+      track.appendChild(el('div', 'motion-dot'));
+      // transform only — never width, left or background-position.
+      setInterval(function () { track.classList.toggle('is-out'); }, 1400);
+
+      row.appendChild(track);
+      row.appendChild(el('div', 'swatch-use', t[1]));
+      g.appendChild(row);
+    });
+
+    var note = el('p', 'swatch-use',
+      'Under prefers-reduced-motion every duration token resolves to 1ms. '
+      + 'Animate transform and opacity only.');
+    note.style.marginTop = 'var(--sp-3)';
+    g.appendChild(note);
+    panel.appendChild(g);
+  }
+
+  function buildZ(panel) {
+    var g = group('Z-layers');
+    ZLAYERS.forEach(function (t) {
+      var row = el('div', 'z-row');
+      row.appendChild(el('span', null, t[0]));
+      row.appendChild(el('span', 'z-use', t[1]));
+      row.appendChild(el('span', null, tokenValue(panel, t[0])));
+      g.appendChild(row);
+    });
+    panel.appendChild(g);
+  }
+
+  function buildContrast(panel) {
+    var g = group('Contrast — WCAG 2.1');
+    var table = el('table', 'contrast');
+
+    var thead = el('thead');
+    var htr = el('tr');
+    ['Pair', 'Sample', 'Ratio', 'Needs', 'Verdict'].forEach(function (h) {
+      htr.appendChild(el('th', null, h));
+    });
+    thead.appendChild(htr);
+    table.appendChild(thead);
+
+    var tbody = el('tbody');
+    PAIRS.forEach(function (p) {
+      var label = p[0], fg = p[1], bg = p[2], need = p[3];
+      var ratio = contrast(tokenValue(panel, fg), tokenValue(panel, bg));
+
+      var tr = el('tr');
+      tr.appendChild(el('td', null, label));
+
+      var sampleCell = el('td');
+      var sample = el('span', 'sample', 'Aa 14px');
+      sample.style.color = 'var(' + fg + ')';
+      sample.style.background = 'var(' + bg + ')';
+      sampleCell.appendChild(sample);
+      tr.appendChild(sampleCell);
+
+      tr.appendChild(el('td', 'num', ratio.toFixed(2) + ':1'));
+
+      if (need === null) {
+        tr.appendChild(el('td', 'num', '—'));
+        var ex = el('td');
+        var exBadge = el('span', 'verdict exempt', 'Exempt');
+        ex.appendChild(exBadge);
+        ex.appendChild(el('div', 'swatch-use', EXEMPT_REASON[fg] || ''));
+        tr.appendChild(ex);
+      } else {
+        tr.appendChild(el('td', 'num', need.toFixed(1) + ':1'));
+        var v = el('td');
+        var pass = ratio >= need;
+        v.appendChild(el('span', 'verdict ' + (pass ? 'pass' : 'fail'),
+          pass ? 'Pass' : 'Fail'));
+        tr.appendChild(v);
+      }
+
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    g.appendChild(table);
+    panel.appendChild(g);
+  }
+
+  function buildPanel(theme) {
+    var panel = el('section', 'panel');
+    panel.setAttribute('data-theme', theme);
+    panel.setAttribute('aria-label', theme + ' theme tokens');
+    panel.appendChild(el('div', 'panel-name', theme));
+    // The panel must be in the document before getComputedStyle can resolve
+    // its custom properties against its own data-theme.
+    document.getElementById('panels').appendChild(panel);
+
+    buildColorGroups(panel);
+    buildRamp(panel);
+    buildType(panel);
+    buildSpacing(panel);
+    buildRadii(panel);
+    buildMotion(panel);
+    buildZ(panel);
+    buildContrast(panel);
+  }
+
+  buildPanel('light');
+  buildPanel('dark');
+
+  /* ---------------------------------------------------------------------
+     Theme switch for the page chrome
+     --------------------------------------------------------------------- */
+
+  var buttons = Array.prototype.slice.call(
+    document.querySelectorAll('[data-set-theme]'));
+
+  function current() {
+    return document.documentElement.getAttribute('data-theme') || 'system';
+  }
+
+  function sync() {
+    var now = current();
+    buttons.forEach(function (b) {
+      b.setAttribute('aria-pressed',
+        String(b.getAttribute('data-set-theme') === now));
+    });
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      var next = b.getAttribute('data-set-theme');
+      if (next === 'system') {
+        document.documentElement.removeAttribute('data-theme');
+        try { localStorage.removeItem('flowstate.theme'); } catch (e) {}
+      } else {
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem('flowstate.theme', next); } catch (e) {}
+      }
+      sync();
+    });
+  });
+
+  sync();
+})();
+</script>
+</body>
+</html>

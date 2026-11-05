@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Flowstate</title>
+
+<!--
+  The pill window paints over the user's document, so a theme flash here is
+  worse than anywhere else in the app: it is a white rectangle appearing on a
+  dark screen at the exact moment they start speaking. Same inline block every
+  screen carries, run before the stylesheets so the first frame is correct.
+-->
+<script>
+  (function () {
+    try {
+      var q = new URLSearchParams(location.search).get('theme');
+      var mode = q || localStorage.getItem('flowstate.theme');
+      if (mode === 'light' || mode === 'dark') {
+        document.documentElement.setAttribute('data-theme', mode);
+      }
+      // No attribute at all == System mode; tokens.css follows the OS.
+    } catch (e) { /* private mode, first run — System is a fine default */ }
+  })();
+</script>
+
+<link rel="stylesheet" href="../styles/tokens.css">
+<link rel="stylesheet" href="../styles/base.css">
+<link rel="stylesheet" href="pill.css">
+</head>
+
+<body class="pill-root">
+
+<!--
+  One stage, one pill. Everything a state might need is in the markup and CSS
+  picks what to show, so a state change is one attribute write — no innerHTML
+  during a live dictation.
+-->
+<div class="pill-stage" data-pill-stage data-visible="false" data-anim="on">
+  <div class="pill" data-pill data-state="idle-armed">
+    <span class="pill-tint" aria-hidden="true"></span>
+
+    <span class="pill-glyph" aria-hidden="true">
+      <span class="pill-dot" data-glyph="dot"></span>
+      <svg class="pill-icon" data-glyph="check" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round"
+           stroke-linejoin="round" focusable="false">
+        <path d="m5 13 4 4 10-10"/>
+      </svg>
+      <svg class="pill-icon" data-glyph="alert" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.75" stroke-linecap="round"
+           stroke-linejoin="round" focusable="false">
+        <path d="M12 4 2 20h20L12 4Z"/><path d="M12 10v5"/><path d="M12 18h.01"/>
+      </svg>
+    </span>
+
+    <span class="pill-body">
+      <span class="pill-wave" data-body="wave" data-pill-wave aria-hidden="true"></span>
+      <span class="pill-shimmer" data-body="shimmer" aria-hidden="true">
+        <span class="pill-shimmer-band"></span>
+      </span>
+      <span class="pill-text" data-body="text" data-pill-text aria-hidden="true"></span>
+    </span>
+
+    <!-- The visible text is empty in two of the five states, so the spoken
+         state lives in its own polite region rather than in the pill body. -->
+    <span class="visually-hidden" role="status" aria-live="polite" data-pill-announce></span>
+  </div>
+</div>
+
+<script src="pill.js"></script>
+<script>
+  (function () {
+    var pill = FlowPill.createPill({
+      root: document.querySelector('[data-pill-stage]')
+    });
+
+    // Without the bridge — opened directly in a browser — the pill just sits
+    // there in idle-armed. demo.html is the page that drives it by hand.
+    if (!window.flowPill) return;
+
+    window.flowPill.onState(function (payload) {
+      pill.setState(payload.state, payload);
+    });
+    window.flowPill.onAmplitude(function (amplitude) {
+      pill.setAmplitude(amplitude);
+    });
+    window.flowPill.onVisibility(function (visible) {
+      pill.setVisible(visible);
+    });
+  })();
+</script>
+</body>
+</html>

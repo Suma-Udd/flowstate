@@ -1,0 +1,88 @@
+{
+  "_note": "Placeholder data shown before live data arrives, and used for the README screenshots.",
+  "testField": {
+    "input": "Sure — email me at my work email and I will send the notes over. Standard signoff.",
+    "matched": ["my work email", "standard signoff"]
+  },
+  "conflicts": [
+    {
+      "kind": "prefix",
+      "triggers": ["meeting notes", "meeting notes template"],
+      "message": "\"meeting notes\" is a prefix of \"meeting notes template\". Longest match wins, so the shorter trigger only fires when the longer one does not."
+    }
+  ],
+  "snippets": [
+    {
+      "id": "s-01",
+      "trigger": "my work email",
+      "expansion": "alex@example.com",
+      "appScope": null,
+      "uses": 61,
+      "lastUsed": "2026-07-26"
+    },
+    {
+      "id": "s-02",
+      "trigger": "standard signoff",
+      "expansion": "Thanks,\nAlex",
+      "appScope": null,
+      "uses": 44,
+      "lastUsed": "2026-07-25"
+    },
+    {
+      "id": "s-03",
+      "trigger": "german signoff",
+      "expansion": "Viele Grüße,\nAlex",
+      "appScope": null,
+      "uses": 19,
+      "lastUsed": "2026-07-24"
+    },
+    {
+      "id": "s-04",
+      "trigger": "greek greeting",
+      "expansion": "Γεια σου! Ελπίζω να είσαι καλά.",
+      "appScope": null,
+      "uses": 8,
+      "lastUsed": "2026-07-19"
+    },
+    {
+      "id": "s-05",
+      "trigger": "server ssh",
+      "expansion": "ssh alex@10.0.0.5",
+      "appScope": "WindowsTerminal.exe",
+      "uses": 37,
+      "lastUsed": "2026-07-26"
+    },
+    {
+      "id": "s-06",
+      "trigger": "commit template",
+      "expansion": "feat(scope): summary\n\nWhy this change is needed.",
+      "appScope": "WindowsTerminal.exe",
+      "uses": 23,
+      "lastUsed": "2026-07-23"
+    },
+    {
+      "id": "s-07",
+      "trigger": "meeting notes",
+      "expansion": "## Notes\n\n- \n\n## Decisions\n\n- \n\n## Next\n\n- ",
+      "appScope": "Obsidian.exe",
+      "uses": 14,
+      "lastUsed": "2026-07-22"
+    },
+    {
+      "id": "s-08",
+      "trigger": "meeting notes template",
+      "expansion": "## Attendees\n\n- \n\n## Agenda\n\n1. \n\n## Notes\n\n- \n\n## Decisions\n\n- \n\n## Actions\n\n- [ ] ",
+      "appScope": "Obsidian.exe",
+      "uses": 6,
+      "lastUsed": "2026-07-10"
+    },
+    {
+      "id": "s-09",
+      "trigger": "flowstate repo",
+      "expansion": "https://example.com/flowstate",
+      "appScope": null,
+      "uses": 11,
+      "lastUsed": "2026-07-21"
+    }
+  ]
+}

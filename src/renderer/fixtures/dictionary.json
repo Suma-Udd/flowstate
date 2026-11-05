@@ -1,0 +1,147 @@
+{
+  "_note": "Placeholder data shown before live data arrives, and used for the README screenshots.",
+  "promptBudget": {
+    "terms": 17,
+    "chars": 460,
+    "capChars": 2000,
+    "warnAtTerms": 60
+  },
+  "terms": [
+    {
+      "id": "t-01",
+      "term": "Grafana",
+      "soundsLike": "graph ana",
+      "lang": "en",
+      "addedAt": "2026-05-02",
+      "corrections": 34
+    },
+    {
+      "id": "t-02",
+      "term": "Supabase",
+      "soundsLike": "soup a base",
+      "lang": "en",
+      "addedAt": "2026-05-02",
+      "corrections": 21
+    },
+    {
+      "id": "t-03",
+      "term": "Terraform",
+      "soundsLike": "terra form",
+      "lang": "en",
+      "addedAt": "2026-05-11",
+      "corrections": 9
+    },
+    {
+      "id": "t-04",
+      "term": "Okafor",
+      "soundsLike": "oh kah for",
+      "lang": "en",
+      "addedAt": "2026-04-29",
+      "corrections": 48
+    },
+    {
+      "id": "t-05",
+      "term": "Flowstate",
+      "soundsLike": "flow state",
+      "lang": "en",
+      "addedAt": "2026-04-29",
+      "corrections": 17
+    },
+    {
+      "id": "t-06",
+      "term": "sherpa-onnx",
+      "soundsLike": "sherpa onyx",
+      "lang": "en",
+      "addedAt": "2026-05-18",
+      "corrections": 12
+    },
+    {
+      "id": "t-07",
+      "term": "koffi",
+      "soundsLike": "coffee",
+      "lang": "en",
+      "addedAt": "2026-05-18",
+      "corrections": 7
+    },
+    {
+      "id": "t-08",
+      "term": "Parakeet",
+      "soundsLike": null,
+      "lang": "en",
+      "addedAt": "2026-05-18",
+      "corrections": 5
+    },
+    {
+      "id": "t-09",
+      "term": "DeepSeek",
+      "soundsLike": "deep seek",
+      "lang": "en",
+      "addedAt": "2026-05-04",
+      "corrections": 19
+    },
+    {
+      "id": "t-10",
+      "term": "Kubernetes",
+      "soundsLike": "koo ber net eez",
+      "lang": "en",
+      "addedAt": "2026-06-01",
+      "corrections": 6
+    },
+    {
+      "id": "t-11",
+      "term": "Bürgeramt",
+      "soundsLike": "bür ger amt",
+      "lang": "de",
+      "addedAt": "2026-05-26",
+      "corrections": 11
+    },
+    {
+      "id": "t-12",
+      "term": "Krankenkasse",
+      "soundsLike": null,
+      "lang": "de",
+      "addedAt": "2026-05-26",
+      "corrections": 8
+    },
+    {
+      "id": "t-13",
+      "term": "Anmeldebestätigung",
+      "soundsLike": "an melde be stätigung",
+      "lang": "de",
+      "addedAt": "2026-06-09",
+      "corrections": 4
+    },
+    {
+      "id": "t-14",
+      "term": "Θεσσαλονίκη",
+      "soundsLike": "thessaloniki",
+      "lang": "el",
+      "addedAt": "2026-06-14",
+      "corrections": 13
+    },
+    {
+      "id": "t-15",
+      "term": "Ευχαριστώ",
+      "soundsLike": "efharisto",
+      "lang": "el",
+      "addedAt": "2026-06-14",
+      "corrections": 22
+    },
+    {
+      "id": "t-16",
+      "term": "Ryzen",
+      "soundsLike": "rye zen",
+      "lang": "en",
+      "addedAt": "2026-07-02",
+      "corrections": 3
+    },
+    {
+      "id": "t-17",
+      "term": "Rechtsschutzversicherungsgesellschaft",
+      "soundsLike": "rechts schutz versicherungs gesellschaft",
+      "lang": "de",
+      "addedAt": "2026-07-09",
+      "corrections": 2
+    }
+  ]
+}
