@@ -1,14 +1,16 @@
 name: windows-build
 
-# Run this by hand from the Actions tab.
+# Run this by hand from the Actions tab, or let a pull request run it.
 #
-#   Leave "version" empty  -> a test build. The installer is attached to the run
-#                             as an artifact. Nothing is published.
+#   Pull request / "version" empty -> a test build. The installer and UI
+#                             screenshots are attached to the run as artifacts.
+#                             Nothing is published.
 #   Enter a version        -> a release. It sets the version, builds, tests the
 #                             installer on this machine, signs latest.json and
 #                             publishes the GitHub release.
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       version:
@@ -24,8 +26,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: windows-build
-  cancel-in-progress: false
+  group: windows-build-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -38,7 +40,7 @@ jobs:
       FLOWSTATE_UPDATE_KEY: ${{ secrets.FLOWSTATE_UPDATE_KEY }}
     steps:
       - name: Check the inputs and the signing key
-        if: ${{ inputs.version != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.version != '' }}
         shell: pwsh
         run: |
           if ($env:VERSION -notmatch '^\d+\.\d+\.\d+$') { throw "Version must look like 0.1.0, got '$env:VERSION'." }
@@ -57,7 +59,7 @@ jobs:
           cache: npm
 
       - name: Set the version
-        if: ${{ inputs.version != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.version != '' }}
         shell: pwsh
         run: |
           if (git tag -l "v$env:VERSION") { throw "Tag v$env:VERSION already exists. Pick a newer version." }
@@ -81,6 +83,19 @@ jobs:
         shell: pwsh
         run: powershell -ExecutionPolicy Bypass -File scripts/windows-smoke.ps1 -Installer release/Flowstate-Setup.exe -Work "$env:RUNNER_TEMP\smoke"
 
+      - name: Capture UI screenshots
+        continue-on-error: true
+        run: npm run screenshots -- --out "$env:RUNNER_TEMP\shots"
+
+      - name: Keep the UI screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-screenshots
+          path: ${{ runner.temp }}\shots
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Keep the smoke test report
         if: always()
         uses: actions/upload-artifact@v4
@@ -97,14 +112,14 @@ jobs:
           retention-days: 14
 
       - name: Sign latest.json
-        if: ${{ inputs.version != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.version != '' }}
         shell: pwsh
         run: |
           $url = "https://github.com/${{ github.repository }}/releases/download/v$env:VERSION/Flowstate-Setup.exe"
           node scripts/make-latest-json.mjs --version $env:VERSION --installer release/Flowstate-Setup.exe --url $url --out release/latest.json
 
       - name: Publish the release
-        if: ${{ inputs.version != '' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.version != '' }}
         shell: pwsh
         run: |
           git push origin HEAD:main

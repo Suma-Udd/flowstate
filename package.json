@@ -5,14 +5,15 @@
   "main": "src/main/main.js",
   "scripts": {
     "start": "electron .",
-    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "postinstall": "node scripts/postinstall.cjs",
     "test": "node --test",
     "screenshots": "electron tools/screenshots.cjs",
     "icon": "node tools/make-icon.mjs",
     "set-version": "node scripts/set-version.mjs",
     "dist": "electron-builder --win --x64 --publish never",
     "dist:dir": "electron-builder --win dir --x64 --publish never",
-    "check:native": "node scripts/check-native-imports.cjs"
+    "check:native": "node scripts/check-native-imports.cjs",
+    "check:commits": "node scripts/check-commits.mjs"
   },
   "devDependencies": {
     "@electron/rebuild": "4.2.0",
@@ -23,7 +24,6 @@
     "better-sqlite3": "13.0.1",
     "koffi": "3.1.2",
     "sherpa-onnx-node": "1.13.4",
-    "sherpa-onnx-win-x64": "1.13.4",
     "uiohook-napi": "1.5.5"
   },
   "author": "Sumayer",
@@ -87,5 +87,8 @@
   },
   "bugs": {
     "url": "https://github.com/Suma-Udd/flowstate/issues"
+  },
+  "optionalDependencies": {
+    "sherpa-onnx-win-x64": "1.13.4"
   }
 }

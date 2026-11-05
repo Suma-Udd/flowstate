@@ -59,6 +59,10 @@ Small, single-purpose pull requests are easiest to review. For a big idea, open 
 
 ## Releases
 
-A maintainer releases from the **windows-build** workflow on GitHub Actions. It sets the version, builds the installer, tests it on a clean runner, signs `latest.json` and publishes the release. Run it with no version for a test build.
+A maintainer releases from the **windows-build** workflow on GitHub Actions. It sets the version, builds the installer, tests it on a clean runner, signs `latest.json` and publishes the release. Run it with no version for a test build. Every pull request gets that test build automatically, with the installer and screenshots of the main screens attached to the run.
+
+## Working without a Windows PC
+
+You do not need Windows to work on Flowstate. `npm ci` and `npm test` run on Linux, and every pull request is built and smoke-tested on a clean Windows runner by GitHub Actions. See [AGENTS.md](AGENTS.md) for how to read those results and what they cannot prove (the microphone, the global hotkey and pasting into other apps need a real PC).
 
 By contributing you agree that your work is released under the [MIT license](LICENSE).
