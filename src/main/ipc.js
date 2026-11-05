@@ -913,7 +913,7 @@ function createIpcBridge({
     }
     const target = {
       model: () => model.getModelsDirectory?.(),
-      config: () => (config.filePath ? path.dirname(config.filePath) : null),
+      config: () => (config.filePath ? path.win32.dirname(config.filePath) : null),
       logs: () => errorLog?.directory,
     }[kind]();
     if (!target) throw new Error(`No ${kind} location is available yet.`);

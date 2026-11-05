@@ -7,7 +7,9 @@ const parentPort = process.parentPort;
 
 function modelsDirectoryFromArgs(argv = process.argv) {
   const candidate = argv[2];
-  return typeof candidate === 'string' && path.isAbsolute(candidate)
+  // Flowstate is a Windows app, so these are Windows paths on every platform
+  // (path.win32 is the same object as path on Windows).
+  return typeof candidate === 'string' && path.win32.isAbsolute(candidate)
     ? candidate
     : undefined;
 }

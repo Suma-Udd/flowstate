@@ -8,7 +8,12 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  # The real thing: the same OS the app runs on.
   test:
     runs-on: windows-latest
     timeout-minutes: 20
@@ -20,3 +25,34 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+
+  # Fast feedback for anyone working without a Windows PC, such as a cloud
+  # coding session. Windows-only behaviour is covered by the job above.
+  test-linux:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  # Commits on branches of this repository (the maintainer's own work and the
+  # cloud sessions working for them) are authored by the maintainer, with no
+  # Co-Authored-By or "Generated with" lines, whoever or whatever made them.
+  # Pull requests from forks are other people's work and are not held to this.
+  commit-rules:
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check the commits and the description
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/check-commits.mjs "${{ github.event.pull_request.base.sha }}" "${{ github.event.pull_request.head.sha }}"
